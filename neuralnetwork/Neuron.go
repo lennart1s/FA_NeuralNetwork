@@ -7,9 +7,13 @@ type Neuron struct {
 
 	Conns []Connection
 
-	Input     float64
-	Output    float64
+	Input  float64
+	Output float64
+
 	Processed bool
+
+	Delta                  float64
+	PrevLayerWeightedDelta float64
 }
 
 const (

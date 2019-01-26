@@ -12,6 +12,7 @@ type NeuralNetwork struct {
 	ActivDeriv FloatFunction `json:"-"`
 
 	IsLayered bool
+	Layers    int
 
 	Fitness float64
 }
@@ -47,6 +48,8 @@ func (nn *NeuralNetwork) Create(settings NetworkSettings) {
 }
 
 func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
+	nn.IsLayered = true
+	nn.Layers = len(settings.LayerSizes) + 2
 	layerSizes := append([]int{settings.Inputs}, append(settings.LayerSizes, settings.Outputs)...)
 	for l := 0; l < len(layerSizes); l++ {
 		for i := 0; i < layerSizes[l]; i++ {
@@ -67,7 +70,7 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 
 			nn.Neurons = append(nn.Neurons, n)
 		}
-		if settings.UseBiases {
+		if settings.UseBiases && l != len(layerSizes)-1 {
 			b := Neuron{Type: BIAS, Layer: l}
 			nn.Neurons = append(nn.Neurons, b)
 		}
