@@ -4,5 +4,6 @@ type Connection struct {
 	UpperNeuron   *Neuron `json:"-"`
 	UpperNeuronID int
 
-	Weight float64
+	Weight           float64
+	LastWeightChange float64
 }
