@@ -20,5 +20,10 @@ func main() {
 	td.LearningRate = 0.7
 	td.Momentum = 0.3
 
-	NT.Backpropagation(&nn, td)
+	for err := NT.MeanSquaredError(&nn, td); err > 0.00001; err = NT.MeanSquaredError(&nn, td) {
+		NT.Backpropagation(&nn, td)
+	}
+
+	fmt.Println(NT.MeanSquaredError(&nn, td))
+
 }

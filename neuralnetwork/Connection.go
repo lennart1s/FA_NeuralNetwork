@@ -6,6 +6,6 @@ type Connection struct {
 
 	Weight float64
 
-	LastWeightChange float64
-	Gradient         float64
+	WeightChange float64
+	Gradient     float64
 }

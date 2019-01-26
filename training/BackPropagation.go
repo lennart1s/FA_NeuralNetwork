@@ -12,13 +12,18 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 	}
 
 	layers := getLayers(nn)
+	for n := 0; n < len(nn.Neurons); n++ {
+		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+			nn.Neurons[n].Conns[c].Gradient = 0
+		}
+	}
 
 	for i := 0; i < len(td.Inputs) && i < len(td.Ideals); i++ {
 		actualOut := nn.Run(td.Inputs[i])
 
 		// Delta-calculation
 		var outputCount int
-		for l := len(layers) - 1; l >= 0; l++ {
+		for l := len(layers) - 1; l >= 0; l-- {
 			for _, n := range layers[l] {
 				if n.Type == NN.OUTPUT {
 					err := actualOut[outputCount] - td.Ideals[i][outputCount]
@@ -37,9 +42,22 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 		}
 
 		// Gradient-calculation
+		for n := 0; n < len(nn.Neurons); n++ {
+			for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+				nn.Neurons[n].Conns[c].Gradient += nn.Neurons[n].Delta * nn.Neurons[n].Conns[c].UpperNeuron.Output
+			}
+		}
 
 	}
 
+	// Weight-adjustment
+	for n := 0; n < len(nn.Neurons); n++ {
+		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+			con := &nn.Neurons[n].Conns[c]
+			con.WeightChange = td.LearningRate * con.Gradient * td.Momentum * con.WeightChange
+			con.Weight += con.WeightChange
+		}
+	}
 }
 
 func getLayers(nn *NN.NeuralNetwork) [][]*NN.Neuron {
