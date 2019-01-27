@@ -9,7 +9,7 @@
 			"Output": 1,
 			"Processed": true,
 			"Delta": 0,
-			"PrevLayerWeightedDelta": -0.053541089763474936
+			"PrevLayerWeightedDelta": -0.004784134214174303
 		},
 		{
 			"Id": "5444ea8f-221b-11e9-8d90-fcaa149797d3",
@@ -20,7 +20,7 @@
 			"Output": 1,
 			"Processed": true,
 			"Delta": 0,
-			"PrevLayerWeightedDelta": -0.019802742854079104
+			"PrevLayerWeightedDelta": 0.001574438369789037
 		},
 		{
 			"Id": "5444ea8f-221b-11e9-8d91-fcaa149797d3",
@@ -31,7 +31,7 @@
 			"Output": 1,
 			"Processed": true,
 			"Delta": 0,
-			"PrevLayerWeightedDelta": -0.017084149617667337
+			"PrevLayerWeightedDelta": -0.006411575166938034
 		},
 		{
 			"Id": "5444ea8f-221b-11e9-8d92-fcaa149797d3",
@@ -40,28 +40,28 @@
 			"Conns": [
 				{
 					"UpperNeuronID": "54449c82-221b-11e9-8d90-fcaa149797d3",
-					"Weight": -0.06120823649267497,
-					"WeightChange": 0.008791763507325037,
-					"Gradient": 0.012559662153321483
+					"Weight": -0.056941013456825194,
+					"WeightChange": 0.0009794830726889813,
+					"Gradient": 0.0009621986864280473
 				},
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d90-fcaa149797d3",
-					"Weight": 0.230607635052276,
-					"WeightChange": 0.010607635052275995,
-					"Gradient": 0.01515376436039428
+					"Weight": 0.22588280523678705,
+					"WeightChange": -0.0001305448471189268,
+					"Gradient": -0.00014731438862285
 				},
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d91-fcaa149797d3",
-					"Weight": -0.44238482800897544,
-					"WeightChange": 0.017615171991024595,
-					"Gradient": 0.02516453141574942
+					"Weight": -0.40562704649736014,
+					"WeightChange": 0.00012013122138810748,
+					"Gradient": 0.00008068425794768679
 				}
 			],
-			"Input": -0.31000000000000005,
-			"Output": 0.42311473886795364,
+			"Input": -0.23765432416435645,
+			"Output": 0.4408644863824104,
 			"Processed": true,
-			"Delta": 0.010051372501834181,
-			"PrevLayerWeightedDelta": 0.04117918727151347
+			"Delta": 0.015530669609071778,
+			"PrevLayerWeightedDelta": 0.06300398037455487
 		},
 		{
 			"Id": "5444ea8f-221b-11e9-8d93-fcaa149797d3",
@@ -70,28 +70,28 @@
 			"Conns": [
 				{
 					"UpperNeuronID": "54449c82-221b-11e9-8d90-fcaa149797d3",
-					"Weight": 0.9248362772189168,
-					"WeightChange": -0.015163722781083175,
-					"Gradient": -0.021662461115833108
+					"Weight": 0.9442960774346545,
+					"WeightChange": 0.0010411658201472421,
+					"Gradient": 0.0010528962116884413
 				},
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d90-fcaa149797d3",
-					"Weight": 0.43982468060952523,
-					"WeightChange": -0.020175319390474813,
-					"Gradient": -0.02882188484353545
+					"Weight": 0.4721689671062791,
+					"WeightChange": 0.002142849239515708,
+					"Gradient": 0.0021578795016011666
 				},
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d91-fcaa149797d3",
-					"Weight": 0.061440743835041785,
-					"WeightChange": -0.03855925616495822,
-					"Gradient": -0.055084651664226034
+					"Weight": 0.027524413564297887,
+					"WeightChange": 0.0008021556464018174,
+					"Gradient": 0.000823933857630901
 				}
 			],
-			"Input": 1.5,
-			"Output": 0.8175744761936437,
+			"Input": 1.4400032873991668,
+			"Output": 0.8084551605106075,
 			"Processed": true,
-			"Delta": -0.016191832794535937,
-			"PrevLayerWeightedDelta": -0.10856331189762641
+			"Delta": -0.004118282418834197,
+			"PrevLayerWeightedDelta": -0.026594371573263536
 		},
 		{
 			"Id": "5444ea8f-221b-11e9-8d94-fcaa149797d3",
@@ -102,7 +102,7 @@
 			"Output": 1,
 			"Processed": true,
 			"Delta": 0,
-			"PrevLayerWeightedDelta": -0.14599893668991143
+			"PrevLayerWeightedDelta": -0.008763286815939441
 		},
 		{
 			"Id": "5444ea8f-221b-11e9-8d95-fcaa149797d3",
@@ -111,27 +111,27 @@
 			"Conns": [
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d92-fcaa149797d3",
-					"Weight": -0.2728715385954666,
-					"WeightChange": -0.05287153859546661,
-					"Gradient": -0.07553076942209516
+					"Weight": -0.49915623752706195,
+					"WeightChange": 0.000006166854558526367,
+					"Gradient": 0.00014873754830297542
 				},
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d93-fcaa149797d3",
-					"Weight": 0.49353448043679127,
-					"WeightChange": -0.08646551956320872,
-					"Gradient": -0.12352217080458389
+					"Weight": 0.21385901471250968,
+					"WeightChange": 0.0031594624205766855,
+					"Gradient": 0.00339621168887555
 				},
 				{
 					"UpperNeuronID": "5444ea8f-221b-11e9-8d94-fcaa149797d3",
-					"Weight": 0.6489753132270026,
-					"WeightChange": -0.13102468677299742,
-					"Gradient": -0.18717812396142489
+					"Weight": 0.06912847723323036,
+					"WeightChange": -0.00030052219387116403,
+					"Gradient": 0.0000456610742152197
 				}
 			],
-			"Input": 1.1611079536413635,
-			"Output": 0.7615339774992795,
+			"Input": 0.019707162765677202,
+			"Output": 0.5049266312452071,
 			"Processed": true,
-			"Delta": -0.13829455402725144,
+			"Delta": -0.12621940238589557,
 			"PrevLayerWeightedDelta": 0
 		}
 	],

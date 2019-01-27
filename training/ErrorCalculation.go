@@ -14,6 +14,7 @@ func MeanSquaredError(nn *NN.NeuralNetwork, td TrainingData) float64 {
 			err += math.Pow(td.Ideals[i][j]-actualOut[j], 2)
 		}
 	}
+	err /= float64(len(td.Inputs))
 
 	return err
 }

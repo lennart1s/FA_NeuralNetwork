@@ -56,8 +56,6 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 	layerSizes := append([]int{settings.Inputs}, append(settings.LayerSizes, settings.Outputs)...)
 	for l := 0; l < len(layerSizes); l++ {
 		for i := 0; i < layerSizes[l]; i++ {
-			//id, _ := UUID.NewUUID()
-			//n := Neuron{Type: HIDDEN, Layer: l, Id: id}
 			n := NewNeuron(HIDDEN)
 			n.Layer = l
 
@@ -71,7 +69,6 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 
 			for o := 0; o < len(nn.Neurons); o++ {
 				if nn.Neurons[o].Layer == n.Layer-1 {
-					//n.Conns = append(n.Conns, Connection{UpperNeuron: &(nn.Neurons[o])})
 					n.ConnectTo(&nn.Neurons[o])
 				}
 			}
@@ -79,11 +76,21 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 			nn.Neurons = append(nn.Neurons, n)
 		}
 		if settings.UseBiases && l != len(layerSizes)-1 {
-			//id, _ := UUID.NewUUID()
-			//b := Neuron{Type: BIAS, Layer: l, Id: id}
 			b := NewNeuron(BIAS)
 			b.Layer = l
 			nn.Neurons = append(nn.Neurons, b)
+		}
+	}
+	for n := 0; n < len(nn.Neurons); n++ {
+		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+		search:
+			for o := 0; o < len(nn.Neurons); o++ {
+				if nn.Neurons[o].Id == nn.Neurons[n].Conns[c].UpperNeuronID {
+					nn.Neurons[n].Conns[c].UpperNeuron = &nn.Neurons[o]
+					break search
+				}
+			}
+
 		}
 	}
 }
@@ -111,18 +118,6 @@ type NetworkSettings struct {
 }
 
 func (nn *NeuralNetwork) SaveTo(path string) {
-	/*for n := 0; n < len(nn.Neurons); n++ {
-		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
-		search:
-			for o := 0; o < len(nn.Neurons); o++ {
-				if nn.Neurons[o].Id == nn.Neurons[n].Conns[c].UpperNeuron.Id {
-					//nn.Neurons[n].Conns[c].UpperNeuronID = o
-					break search
-				}
-			}
-		}
-	}*/
-
 	bytes, err := json.MarshalIndent(nn, "", "\t")
 	check(err)
 

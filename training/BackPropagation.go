@@ -18,10 +18,13 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 		}
 	}
 
-	for i := 0; i < len(td.Inputs) && i < len(td.Ideals); i++ {
+	for i := 0; i < len(td.Inputs); i++ {
 		actualOut := nn.Run(td.Inputs[i])
 
 		// Delta-calculation
+		for n := 0; n < len(nn.Neurons); n++ {
+			nn.Neurons[n].PrevLayerWeightedDelta = 0
+		}
 		var outputCount int
 		for l := len(layers) - 1; l >= 0; l-- {
 			for _, n := range layers[l] {
@@ -29,14 +32,11 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 					err := actualOut[outputCount] - td.Ideals[i][outputCount]
 					n.Delta = -err * nn.ActivDeriv(n.Input)
 					outputCount++
-					for _, c := range n.Conns {
-						c.UpperNeuron.PrevLayerWeightedDelta += n.Delta * c.Weight
-					}
 				} else if n.Type == NN.HIDDEN {
 					n.Delta = nn.ActivDeriv(n.Input) * n.PrevLayerWeightedDelta
-					for _, c := range n.Conns {
-						c.UpperNeuron.PrevLayerWeightedDelta += n.Delta * c.Weight
-					}
+				}
+				for _, c := range n.Conns {
+					c.UpperNeuron.PrevLayerWeightedDelta += n.Delta * c.Weight
 				}
 			}
 		}
