@@ -1,7 +1,10 @@
 package neuralnetwork
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -18,9 +21,9 @@ type NeuralNetwork struct {
 }
 
 func (nn *NeuralNetwork) Run(input []float64) []float64 {
+	var inputCount int
 	for n := 0; n < len(nn.Neurons); n++ {
 		nn.Neurons[n].Processed = false
-		var inputCount int
 		if inputCount < len(input) && nn.Neurons[n].Type == INPUT {
 			nn.Neurons[n].Input = input[inputCount]
 			inputCount++
@@ -53,10 +56,14 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 	layerSizes := append([]int{settings.Inputs}, append(settings.LayerSizes, settings.Outputs)...)
 	for l := 0; l < len(layerSizes); l++ {
 		for i := 0; i < layerSizes[l]; i++ {
-			n := Neuron{Type: HIDDEN, Layer: l}
+			//id, _ := UUID.NewUUID()
+			//n := Neuron{Type: HIDDEN, Layer: l, Id: id}
+			n := NewNeuron(HIDDEN)
+			n.Layer = l
 
 			if l == 0 {
 				n.Type = INPUT
+				nn.Neurons = append(nn.Neurons, n)
 				continue
 			} else if l == len(layerSizes)-1 {
 				n.Type = OUTPUT
@@ -64,14 +71,18 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 
 			for o := 0; o < len(nn.Neurons); o++ {
 				if nn.Neurons[o].Layer == n.Layer-1 {
-					n.Conns = append(n.Conns, Connection{UpperNeuron: &nn.Neurons[o]})
+					//n.Conns = append(n.Conns, Connection{UpperNeuron: &(nn.Neurons[o])})
+					n.ConnectTo(&nn.Neurons[o])
 				}
 			}
 
 			nn.Neurons = append(nn.Neurons, n)
 		}
 		if settings.UseBiases && l != len(layerSizes)-1 {
-			b := Neuron{Type: BIAS, Layer: l}
+			//id, _ := UUID.NewUUID()
+			//b := Neuron{Type: BIAS, Layer: l, Id: id}
+			b := NewNeuron(BIAS)
+			b.Layer = l
 			nn.Neurons = append(nn.Neurons, b)
 		}
 	}
@@ -97,4 +108,58 @@ type NetworkSettings struct {
 
 	ActivFunc  FloatFunction
 	ActivDeriv FloatFunction
+}
+
+func (nn *NeuralNetwork) SaveTo(path string) {
+	/*for n := 0; n < len(nn.Neurons); n++ {
+		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+		search:
+			for o := 0; o < len(nn.Neurons); o++ {
+				if nn.Neurons[o].Id == nn.Neurons[n].Conns[c].UpperNeuron.Id {
+					//nn.Neurons[n].Conns[c].UpperNeuronID = o
+					break search
+				}
+			}
+		}
+	}*/
+
+	bytes, err := json.MarshalIndent(nn, "", "\t")
+	check(err)
+
+	file, err := os.Create(path)
+	check(err)
+	defer file.Close()
+
+	_, err = file.Write(bytes)
+	check(err)
+}
+
+func (nn *NeuralNetwork) LoadFrom(path string, activFunc FloatFunction, activDeriv FloatFunction) {
+	bytes, err := ioutil.ReadFile(path)
+	check(err)
+
+	err = json.Unmarshal(bytes, &nn)
+	check(err)
+
+	nn.ActivFunc = activFunc
+	nn.ActivDeriv = activDeriv
+
+	for n := 0; n < len(nn.Neurons); n++ {
+		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+		search:
+			for o := 0; o < len(nn.Neurons); o++ {
+				if nn.Neurons[o].Id == nn.Neurons[n].Conns[c].UpperNeuronID {
+					nn.Neurons[n].Conns[c].UpperNeuron = &nn.Neurons[o]
+					break search
+				}
+			}
+
+		}
+	}
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

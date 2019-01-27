@@ -54,7 +54,7 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 	for n := 0; n < len(nn.Neurons); n++ {
 		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
 			con := &nn.Neurons[n].Conns[c]
-			con.WeightChange = td.LearningRate * con.Gradient * td.Momentum * con.WeightChange
+			con.WeightChange = td.LearningRate*con.Gradient + td.Momentum*con.WeightChange
 			con.Weight += con.WeightChange
 		}
 	}

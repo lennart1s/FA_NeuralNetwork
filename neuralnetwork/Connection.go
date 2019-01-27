@@ -1,8 +1,10 @@
 package neuralnetwork
 
+import UUID "github.com/google/uuid"
+
 type Connection struct {
 	UpperNeuron   *Neuron `json:"-"`
-	UpperNeuronID int
+	UpperNeuronID UUID.UUID
 
 	Weight float64
 

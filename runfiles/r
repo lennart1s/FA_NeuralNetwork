@@ -1,0 +1,141 @@
+{
+	"Neurons": [
+		{
+			"Id": "08eb4049-221e-11e9-acfc-fcaa149797d3",
+			"Type": 0,
+			"Layer": 0,
+			"Conns": null,
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		},
+		{
+			"Id": "08eb8e5b-221e-11e9-acfc-fcaa149797d3",
+			"Type": 0,
+			"Layer": 0,
+			"Conns": null,
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		},
+		{
+			"Id": "08eb8e5b-221e-11e9-acfd-fcaa149797d3",
+			"Type": 2,
+			"Layer": 0,
+			"Conns": null,
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		},
+		{
+			"Id": "08eb8e5b-221e-11e9-acfe-fcaa149797d3",
+			"Type": 1,
+			"Layer": 1,
+			"Conns": [
+				{
+					"UpperNeuronID": "08eb4049-221e-11e9-acfc-fcaa149797d3",
+					"Weight": 0.27834187376434194,
+					"WeightChange": 0,
+					"Gradient": 0
+				},
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-acfc-fcaa149797d3",
+					"Weight": 1.446605145848026,
+					"WeightChange": 0,
+					"Gradient": 0
+				},
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-acfd-fcaa149797d3",
+					"Weight": -1.818528501523367,
+					"WeightChange": 0,
+					"Gradient": 0
+				}
+			],
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		},
+		{
+			"Id": "08eb8e5b-221e-11e9-acff-fcaa149797d3",
+			"Type": 1,
+			"Layer": 1,
+			"Conns": [
+				{
+					"UpperNeuronID": "08eb4049-221e-11e9-acfc-fcaa149797d3",
+					"Weight": -0.8802307304118395,
+					"WeightChange": 0,
+					"Gradient": 0
+				},
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-acfc-fcaa149797d3",
+					"Weight": 1.9013336302520152,
+					"WeightChange": 0,
+					"Gradient": 0
+				},
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-acfd-fcaa149797d3",
+					"Weight": -0.3138382617034088,
+					"WeightChange": 0,
+					"Gradient": 0
+				}
+			],
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		},
+		{
+			"Id": "08eb8e5b-221e-11e9-ad00-fcaa149797d3",
+			"Type": 2,
+			"Layer": 1,
+			"Conns": null,
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		},
+		{
+			"Id": "08eb8e5b-221e-11e9-ad01-fcaa149797d3",
+			"Type": 3,
+			"Layer": 2,
+			"Conns": [
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-acfe-fcaa149797d3",
+					"Weight": -3.378825995439008,
+					"WeightChange": 0,
+					"Gradient": 0
+				},
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-acff-fcaa149797d3",
+					"Weight": 3.204811913190972,
+					"WeightChange": 0,
+					"Gradient": 0
+				},
+				{
+					"UpperNeuronID": "08eb8e5b-221e-11e9-ad00-fcaa149797d3",
+					"Weight": -1.8101102322985296,
+					"WeightChange": 0,
+					"Gradient": 0
+				}
+			],
+			"Input": 0,
+			"Output": 0,
+			"Processed": false,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0
+		}
+	],
+	"IsLayered": true,
+	"Layers": 3,
+	"Fitness": 0
+}
