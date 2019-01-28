@@ -129,6 +129,21 @@ type NetworkSettings struct {
 	ActivDeriv FloatFunction
 }
 
+func (nn *NeuralNetwork) RedoConnectionIndices() {
+	for n := 0; n < len(nn.Neurons); n++ {
+		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
+			for o := 0; o < len(nn.Neurons); o++ {
+				if nn.Neurons[o].Layer == nn.Neurons[n].Layer-1 {
+					nn.Neurons[n].Conns[c].UpperNeuron = &nn.Neurons[o]
+					nn.Neurons[n].ConnectTo(&nn.Neurons[o])
+					//break search
+				}
+			}
+
+		}
+	}
+}
+
 func (nn *NeuralNetwork) SaveTo(path string) {
 	bytes, err := json.MarshalIndent(nn, "", "\t")
 	check(err)
