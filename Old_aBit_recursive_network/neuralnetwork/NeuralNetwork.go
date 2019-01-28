@@ -75,16 +75,6 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 
 			nn.Neurons = append(nn.Neurons, n)
 
-			/*for c := 0; c < len(nn.Neurons[len(nn.Neurons)-1].Conns); c++ {
-			search:
-				for o := 0; o < len(nn.Neurons); o++ {
-					if nn.Neurons[o].Id == nn.Neurons[len(nn.Neurons)-1].Conns[c].UpperNeuronID {
-						nn.Neurons[len(nn.Neurons)-1].Conns[c].UpperNeuron = &nn.Neurons[o]
-						break search
-					}
-				}
-
-			}*/
 		}
 		if settings.UseBiases && l != len(layerSizes)-1 {
 			b := NewNeuron(BIAS)
@@ -93,7 +83,7 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 		}
 	}
 
-	for n := 0; n < len(nn.Neurons); n++ {
+	/*for n := 0; n < len(nn.Neurons); n++ {
 		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
 			for o := 0; o < len(nn.Neurons); o++ {
 				if nn.Neurons[o].Layer == nn.Neurons[n].Layer-1 {
@@ -104,7 +94,7 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 			}
 
 		}
-	}
+	}*/
 }
 
 func (nn *NeuralNetwork) RandomizeWeights(min float64, max float64) {
