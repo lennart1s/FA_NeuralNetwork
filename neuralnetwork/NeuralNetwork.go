@@ -67,13 +67,24 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 				n.Type = OUTPUT
 			}
 
-			for o := 0; o < len(nn.Neurons); o++ {
+			/*for o := 0; o < len(nn.Neurons); o++ {
 				if nn.Neurons[o].Layer == n.Layer-1 {
 					n.ConnectTo(&nn.Neurons[o])
 				}
-			}
+			}*/
 
 			nn.Neurons = append(nn.Neurons, n)
+
+			/*for c := 0; c < len(nn.Neurons[len(nn.Neurons)-1].Conns); c++ {
+			search:
+				for o := 0; o < len(nn.Neurons); o++ {
+					if nn.Neurons[o].Id == nn.Neurons[len(nn.Neurons)-1].Conns[c].UpperNeuronID {
+						nn.Neurons[len(nn.Neurons)-1].Conns[c].UpperNeuron = &nn.Neurons[o]
+						break search
+					}
+				}
+
+			}*/
 		}
 		if settings.UseBiases && l != len(layerSizes)-1 {
 			b := NewNeuron(BIAS)
@@ -81,13 +92,14 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 			nn.Neurons = append(nn.Neurons, b)
 		}
 	}
+
 	for n := 0; n < len(nn.Neurons); n++ {
 		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
-		search:
 			for o := 0; o < len(nn.Neurons); o++ {
-				if nn.Neurons[o].Id == nn.Neurons[n].Conns[c].UpperNeuronID {
-					nn.Neurons[n].Conns[c].UpperNeuron = &nn.Neurons[o]
-					break search
+				if nn.Neurons[o].Layer == nn.Neurons[n].Layer-1 {
+					//nn.Neurons[n].Conns[c].UpperNeuron = &nn.Neurons[o]
+					nn.Neurons[n].ConnectTo(&nn.Neurons[o])
+					//break search
 				}
 			}
 
