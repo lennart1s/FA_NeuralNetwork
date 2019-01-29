@@ -1,8 +1,9 @@
-package neuralnetwork
+package network
 
 type Connection struct {
-	UpperNeuron *Neuron `json:"-"`
-	UpperNeuronID UUID.UUID
+	*Neuron //`json:"-"`
+
+	//ConnectedNeuronId UUID.UUID
 
 	Weight float64
 
