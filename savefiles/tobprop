@@ -1,0 +1,214 @@
+{
+	"Inputs": [
+		{
+			"Id": "dd3e5654-24d7-11e9-a3cd-fcaa149797d3",
+			"Type": 0,
+			"Conns": null,
+			"Input": 1,
+			"Output": 1,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0.005151173539651459
+		},
+		{
+			"Id": "dd3e5654-24d7-11e9-a3ce-fcaa149797d3",
+			"Type": 0,
+			"Conns": null,
+			"Input": 1,
+			"Output": 1,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0.003678071353244862
+		}
+	],
+	"Outputs": [
+		{
+			"Id": "dd3e0a4e-24d7-11e9-a3ca-fcaa149797d3",
+			"Type": 3,
+			"Conns": [
+				{
+					"Id": "dd3e5654-24d7-11e9-a3ca-fcaa149797d3",
+					"Type": 1,
+					"Conns": [
+						{
+							"Id": "dd3e5654-24d7-11e9-a3cd-fcaa149797d3",
+							"Type": 0,
+							"Conns": null,
+							"Input": 1,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": 0.005151173539651459,
+							"Weight": 0.7598338018902584,
+							"WeightChange": 0,
+							"Gradient": -0.008848066973056876
+						},
+						{
+							"Id": "dd3e5654-24d7-11e9-a3ce-fcaa149797d3",
+							"Type": 0,
+							"Conns": null,
+							"Input": 1,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": 0.003678071353244862,
+							"Weight": 0.4383837770686656,
+							"WeightChange": 0,
+							"Gradient": -0.008510890898087126
+						},
+						{
+							"Id": "dd3e5654-24d7-11e9-a3cf-fcaa149797d3",
+							"Type": 2,
+							"Conns": null,
+							"Input": 0,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": -0.008031298116490712,
+							"Weight": -0.8029664321956002,
+							"WeightChange": 0,
+							"Gradient": -0.01692937190322767
+						}
+					],
+					"Input": 0.39525114676332385,
+					"Output": 0.5975461642719094,
+					"Processed": true,
+					"CalculatedGradients": true,
+					"Delta": 0.004090726119588648,
+					"PrevLayerWeightedDelta": 0.017010335126956887,
+					"Weight": -0.3034170682220223,
+					"WeightChange": 0.05804803866299113,
+					"Gradient": 0.08292576951855876
+				},
+				{
+					"Id": "dd3e5654-24d7-11e9-a3cb-fcaa149797d3",
+					"Type": 1,
+					"Conns": [
+						{
+							"Id": "dd3e5654-24d7-11e9-a3cd-fcaa149797d3",
+							"Type": 0,
+							"Conns": null,
+							"Input": 1,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": 0.005151173539651459,
+							"Weight": 0.3639122221000888,
+							"WeightChange": 0,
+							"Gradient": -0.010606520138742446
+						},
+						{
+							"Id": "dd3e5654-24d7-11e9-a3ce-fcaa149797d3",
+							"Type": 0,
+							"Conns": null,
+							"Input": 1,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": 0.003678071353244862,
+							"Weight": 0.3357422821800511,
+							"WeightChange": 0,
+							"Gradient": -0.01059574399214731
+						},
+						{
+							"Id": "dd3e5654-24d7-11e9-a3cf-fcaa149797d3",
+							"Type": 2,
+							"Conns": null,
+							"Input": 0,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": -0.008031298116490712,
+							"Weight": -0.8455323387898592,
+							"WeightChange": 0,
+							"Gradient": -0.020915871830328395
+						}
+					],
+					"Input": -0.14587783450971936,
+					"Output": 0.4635950775886093,
+					"Processed": true,
+					"CalculatedGradients": true,
+					"Delta": 0.005613720660227681,
+					"PrevLayerWeightedDelta": 0.022574556539337338,
+					"Weight": -0.43112922579352825,
+					"WeightChange": 0.048574109353704716,
+					"Gradient": 0.06939158479100674
+				},
+				{
+					"Id": "dd3e5654-24d7-11e9-a3cc-fcaa149797d3",
+					"Type": 2,
+					"Conns": [
+						{
+							"Id": "dd3e5654-24d7-11e9-a3cd-fcaa149797d3",
+							"Type": 0,
+							"Conns": null,
+							"Input": 1,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": 0.005151173539651459,
+							"Weight": -0.3193469685031922,
+							"WeightChange": 0,
+							"Gradient": 0
+						},
+						{
+							"Id": "dd3e5654-24d7-11e9-a3ce-fcaa149797d3",
+							"Type": 0,
+							"Conns": null,
+							"Input": 1,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": 0.003678071353244862,
+							"Weight": 0.6169703261941821,
+							"WeightChange": 0,
+							"Gradient": 0
+						},
+						{
+							"Id": "dd3e5654-24d7-11e9-a3cf-fcaa149797d3",
+							"Type": 2,
+							"Conns": null,
+							"Input": 0,
+							"Output": 1,
+							"Processed": true,
+							"CalculatedGradients": true,
+							"Delta": 0,
+							"PrevLayerWeightedDelta": -0.008031298116490712,
+							"Weight": 0.5484633985428644,
+							"WeightChange": 0,
+							"Gradient": 0
+						}
+					],
+					"Input": 0,
+					"Output": 1,
+					"Processed": true,
+					"CalculatedGradients": true,
+					"Delta": 0,
+					"PrevLayerWeightedDelta": 0.030922210214678305,
+					"Weight": -0.5298308285519161,
+					"WeightChange": 0.12725793171927213,
+					"Gradient": 0.18179704531324592
+				}
+			],
+			"Input": -1.09546895328556,
+			"Output": 0.250589838413556,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"Delta": -0.04705941127636447,
+			"PrevLayerWeightedDelta": 0
+		}
+	],
+	"NumLayers": 3,
+	"BackPropRuns": 0,
+	"Fitness": 0
+}

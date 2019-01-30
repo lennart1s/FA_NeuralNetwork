@@ -14,7 +14,8 @@ type Neuron struct {
 	Input  float64
 	Output float64
 
-	Processed bool
+	Processed           bool
+	CalculatedGradients bool
 
 	Delta                  float64
 	PrevLayerWeightedDelta float64

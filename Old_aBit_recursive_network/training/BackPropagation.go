@@ -31,7 +31,7 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 				if n.Type == NN.OUTPUT {
 					err := actualOut[outputCount] - td.Ideals[i][outputCount]
 					n.Delta = -err * nn.ActivDeriv(n.Input)
-					outputCount++ **DOING SOME (PAUSE***
+					outputCount++
 				} else if n.Type == NN.HIDDEN {
 					n.Delta = nn.ActivDeriv(n.Input) * n.PrevLayerWeightedDelta
 				}

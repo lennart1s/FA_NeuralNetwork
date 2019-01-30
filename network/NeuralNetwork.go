@@ -91,7 +91,7 @@ func (nn *NeuralNetwork) GetLayer(l int) ([]*Neuron, [][]*Neuron) {
 		}
 	} else if l < nn.NumLayers && l >= 0 {
 		parentLayer, grands := nn.GetLayer(l + 1)
-		allParents = append(grands, parentLayer)
+		allParents = append([][]*Neuron{parentLayer}, grands...)
 		for _, parent := range parentLayer {
 		addConnections:
 			for _, con := range parent.Conns {
@@ -108,6 +108,11 @@ func (nn *NeuralNetwork) GetLayer(l int) ([]*Neuron, [][]*Neuron) {
 	}*/
 
 	return layer, allParents
+}
+
+func (nn *NeuralNetwork) GetLayers() [][]*Neuron {
+	input, others := nn.GetLayer(0)
+	return append([][]*Neuron{input}, others...)
 }
 
 ////////////////////////
