@@ -2,8 +2,12 @@ package network
 
 import "math"
 
-// FloatFunction : Eine Typ-Definition für funktionen welche einen Float-Wert als Parameter benötigen
-// und einen Wert in abhängigkeit des Parameters ausgeben.
+/* FloatFunction bescheibt eine Funktion,#
+welche einen float64-Parameter hat und
+einen float64 zurückgibt.
+Sie wird verwendet um die Aktivierungsfunktion
+oder deren Ableitung für ein neuronales Netz 
+darzustellen.*/
 type FloatFunction func(float64) float64
 
 /*func GetDefaults() map[string]FloatFunction {
@@ -17,12 +21,17 @@ type FloatFunction func(float64) float64
 
 // Beispiele:
 
-// Sigmoid : Die Sigmoid-funktion; gibt ausschließlich Werte zwischen 0 und 1 zurück;
+/* Sigmoid ist der Name einer häufig genutzen
+Aktivierungsfunktion für neuronale Netwerke.
+Sie beschreibt eine Art S-Form und gibt 
+ausschließlich Werte zwischen 0 und 1 zurück.*/
 func Sigmoid(x float64) float64 {
-	return 1 / (1 + math.Pow(math.E, -x)) // eine häufig genutze 'Aktivierungsfunktion' für die Berechnung mit einem KNN
+	return 1 / (1 + math.Pow(math.E, -x))
 }
 
-// SigmoidDeriv : Die Ableitung der Sigmoidfunkion; wird zum Trainieren des Netzwerkes benötigt
+/* SigmoidDeriv ist die Ableitung der Sigmoid-
+Fuktion, welche für das Trainieren eines Netzwerkes
+benötigt werden kann.*/
 func SigmoidDeriv(x float64) float64 {
 	return Sigmoid(x) * (1 - Sigmoid(x))
 }
