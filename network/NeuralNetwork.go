@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 )
+
 /* Neural Netowork ist eine Strultur aus Neuronen
 und Verbindungen zwischen diesen. Außerdem werden
 Informationen wie die Aktivierungsfunktion, deren
@@ -17,18 +18,18 @@ type NeuralNetwork struct {
 	zu allen Eingabe-Neuronen des Netwerkes
 	speichert um einen einfacheren Zugriff
 	zu gewährleisten.*/
-	Inputs  []*Neuron
+	Inputs []*Neuron
 	/* Outputs ist ein Slice, welches Pointer
 	zu allen Ausgabe-Neuronen des Netwerkes
 	speichert um einen einfacherern Zugriff
 	zu gewährleisten.*/
 	Outputs []*Neuron
-	
+
 	/* ActivFunc ist die Aktivierungsfunktion,
 	welche beim Berechnen mithilfe des Netzes
 	verwendet wird.
 	Sie wird als FloatFunction gespeichert.*/
-	ActivFunc  FloatFunction `json:"-"`
+	ActivFunc FloatFunction `json:"-"`
 	/* ActivDeriv ist die Ableitung der
 	Aktivierungsfunktion, welche beim Trainieren
 	des Netzes mit der Gradient-Descent-Methode
@@ -117,7 +118,7 @@ func (nn *NeuralNetwork) GetLayer(l int) ([]*Neuron, [][]*Neuron) {
 		addConnections:
 			for _, con := range parent.Conns {
 				for _, layerNeuron := range layer {
-					if layerNeuron.Id == con.Id {
+					if layerNeuron.ID == con.ID {
 						continue addConnections
 					}
 				}

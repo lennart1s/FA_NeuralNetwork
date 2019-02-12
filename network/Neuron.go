@@ -8,11 +8,11 @@ import (
 in einem Netzwerk dar. Die eingehenden
 Verbindungen mit anderen Neuronen wie
 Werte wie die letzte Eingabe und die
-letzte Ausgabe werden verwaltet.*/ 
+letzte Ausgabe werden verwaltet.*/
 type Neuron struct {
-	/* Id ist die einamlige ID von 
+	/* Id ist die einamlige ID von
 	einem Neuron.*/
-	Id UUID.UUID
+	ID UUID.UUID
 
 	/*Type beschreibt die Art des
 	Neurons und wie es folglich
@@ -26,12 +26,12 @@ type Neuron struct {
 	eingehenden Verbindungen von anderen
 	Neuron gespeichert werden.*/
 	Conns []Connection
-	
+
 	/* Input speichert die letzte Gesamt-
 	eingabe. Diese ergibt sich aus der Summe
 	der Produkte aus Ausgabe und Gewichtung
 	aller eingehenden Werte.*/
-	Input  float64
+	Input float64
 	/* Output speichert den letzten Ausgabewert.
 	Dieser brechnet sich aus der verwendeten
 	Aktivierungsfunktion in abhängigkeit von der
@@ -43,15 +43,15 @@ type Neuron struct {
 	Schritt bereits abgeschlossen wurde.
 	Dieses Attribut wird weder vom Neuron selbst
 	noch vom Netzwerk verwendet.*/
-	Processed           bool
+	Processed bool
 	//TODO: ist das noch in gebrauch?
 	CalculatedGradients bool
 
 	/* Delta speichert den zuletzt berechneten
 	Deltawert. Dieser wird zum Trainieren eines
-	Netzwerkes mit Methoden, welche auf der 
+	Netzwerkes mit Methoden, welche auf der
 	Delta-Regel beruhen, verwendet.*/
-	Delta                  float64
+	Delta float64
 	/* ÜrevLayerWeightedDelta ist die Summe
 	der Produkte aus allen Delta-Werten von
 	Neuronen, die mit diesem Neuron verbunden
@@ -61,7 +61,7 @@ type Neuron struct {
 
 func NewNeuron(Type int) Neuron {
 	id, _ := UUID.NewUUID()
-	n := Neuron{Type: Type, Id: id}
+	n := Neuron{Type: Type, ID: id}
 	return n
 }
 
