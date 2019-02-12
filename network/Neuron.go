@@ -83,12 +83,13 @@ func (n *Neuron) Process(activFunc FloatFunction) {
 		n.Output = 1
 	} else {
 		n.Input = 0
-		for c := 0; c < len(n.Conns); c++ {
-			if !n.Conns[c].Neuron.Processed {
-				n.Conns[c].Neuron.Process(activFunc)
+		for _, conn := range n.Conns {
+			if !conn.Neuron.Processed {
+				conn.Neuron.Process(activFunc)
 			}
-			n.Input += n.Conns[c].Weight * n.Conns[c].Neuron.Output
+			n.Input += conn.Weight * conn.Neuron.Output
 		}
+		
 		n.Output = activFunc(n.Input)
 	}
 	n.Processed = true

@@ -43,20 +43,19 @@ func TOBackpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 }
 
 func applyWeightChanges(neuron *NN.Neuron, learningRate float64, momentum float64) {
-	for c := 0; c < len(neuron.Conns); c++ {
-		con := neuron.Conns[c]
-		con.WeightChange = learningRate*con.Gradient + momentum*con.WeightChange
-		con.Weight += con.WeightChange
-		applyWeightChanges(con.Neuron, learningRate, momentum)
+	for _, conn := range neuron.Conns {
+		conn.WeightChange = learningRate*conn.Gradient + momentum*conn.WeightChange
+		conn.Weight += conn.WeightChange
+		applyWeightChanges(conn.Neuron, learningRate, momentum)
 	}
 }
 
 func calculateGradients(neuron *NN.Neuron) {
 	neuron.CalculatedGradients = true
-	for c := 0; c < len(neuron.Conns); c++ {
-		neuron.Conns[c].Gradient += neuron.Delta * neuron.Conns[c].Neuron.Output
-		if !neuron.Conns[c].Neuron.CalculatedGradients {
-			calculateGradients(neuron.Conns[c].Neuron)
+	for _, conn := range neuron.Conns {
+		conn.Gradient += neuron.Delta * conn.Neuron.Output
+		if !conn.Neuron.CalculatedGradients {
+			calculateGradients(conn.Neuron)
 		}
 	}
 }
@@ -76,11 +75,11 @@ func calculateDelta(neuron *NN.Neuron, activDeriv *NN.FloatFunction, ideal float
 // Reset-Functions
 func resetGradients(neuron *NN.Neuron, onlyFlag bool) {
 	neuron.CalculatedGradients = false
-	for c := 0; c < len(neuron.Conns); c++ {
+	for _, conn := range neuron.Conns {
 		if !onlyFlag {
-			neuron.Conns[c].Gradient = 0
+			conn.Gradient = 0
 		}
-		resetGradients(neuron.Conns[c].Neuron, onlyFlag)
+		resetGradients(conn.Neuron, onlyFlag)
 	}
 }
 

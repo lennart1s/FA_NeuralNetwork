@@ -105,8 +105,8 @@ func (nn *NeuralNetwork) RandomizeWeights(min float64, max float64) {
 	_, connectedLayers := nn.GetLayer(0)
 	for _, l := range connectedLayers {
 		for _, n := range l {
-			for c := 0; c < len(n.Conns); c++ {
-				n.Conns[c].Weight = (rand.Float64() * (max - min)) + min
+			for _, conn := range n.Conns {
+				conn.Weight = (rand.Float64() * (max - min)) + min
 			}
 		}
 	}
