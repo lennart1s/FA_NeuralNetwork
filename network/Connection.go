@@ -1,9 +1,11 @@
 package network
 
-type Connection struct {
-	*Neuron //`json:"-"`
+import UUID "github.com/google/uuid"
 
-	//ConnectedNeuronId UUID.UUID
+type Connection struct {
+	*Neuron `json:"-"`
+
+	ConnectedNeuronId UUID.UUID
 
 	Weight float64
 

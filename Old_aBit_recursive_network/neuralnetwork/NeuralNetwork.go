@@ -83,7 +83,7 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 		}
 	}
 
-	/*for n := 0; n < len(nn.Neurons); n++ {
+	for n := 0; n < len(nn.Neurons); n++ {
 		for c := 0; c < len(nn.Neurons[n].Conns); c++ {
 			for o := 0; o < len(nn.Neurons); o++ {
 				if nn.Neurons[o].Layer == nn.Neurons[n].Layer-1 {
@@ -94,7 +94,7 @@ func (nn *NeuralNetwork) createLayered(settings NetworkSettings) {
 			}
 
 		}
-	}*/
+	}
 }
 
 func (nn *NeuralNetwork) RandomizeWeights(min float64, max float64) {
@@ -126,7 +126,6 @@ func (nn *NeuralNetwork) RedoConnectionIndices() {
 				if nn.Neurons[o].Layer == nn.Neurons[n].Layer-1 {
 					nn.Neurons[n].Conns[c].UpperNeuron = &nn.Neurons[o]
 					nn.Neurons[n].ConnectTo(&nn.Neurons[o])
-					//break search
 				}
 			}
 

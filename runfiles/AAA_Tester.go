@@ -29,7 +29,7 @@ func main() {
 		LearningRate: 0.7}
 
 	var i int
-	for err := NT.MeanSquaredError(&nn, td); err > 0.001; err = NT.MeanSquaredError(&nn, td) {
+	for err := NT.MeanSquaredError(&nn, td); err > 0.000001; err = NT.MeanSquaredError(&nn, td) {
 		NT.TOBackpropagation(&nn, td)
 		i++
 		if i%2500 == 0 {
@@ -37,7 +37,7 @@ func main() {
 		}
 	}
 
-	//nn.SaveTo("../savefiles/nn")
+	nn.SaveTo("./savefiles/xor.nn")
 	fmt.Println(nn.Run([]float64{1, 0}))
 
 }

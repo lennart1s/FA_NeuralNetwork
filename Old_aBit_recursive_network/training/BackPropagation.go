@@ -1,7 +1,7 @@
 package training
 
 import (
-	NN "FA_NeuralNetwork/neuralnetwork"
+	NN "FA_NeuralNetwork/Old_aBit_recursive_network/neuralnetwork"
 	"fmt"
 )
 

@@ -1,8 +1,8 @@
 package main
 
 import (
-	NN "FA_NeuralNetwork/neuralnetwork"
-	NT "FA_NeuralNetwork/training"
+	NN "FA_NeuralNetwork/Old_aBit_recursive_network/neuralnetwork"
+	NT "FA_NeuralNetwork/Old_aBit_recursive_network/training"
 	"fmt"
 )
 
@@ -13,6 +13,7 @@ func main() {
 
 	nn.Create(settings)
 	nn.RandomizeWeights(-1, 1)
+	//nn.RedoConnectionIndices()
 
 	td := NT.TrainingData{Inputs: [][]float64{{0, 0}, {0, 1}, {1, 0}, {1, 1}}, Ideals: [][]float64{{0}, {1}, {1}, {0}}}
 	td.LearningRate = 0.7
@@ -31,5 +32,6 @@ func main() {
 
 	fmt.Println(NT.MeanSquaredError(&nn, td))
 	fmt.Println(nn.Run([]float64{0, 0}))
+	nn.SaveTo("xor.nn")
 
 }
