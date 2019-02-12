@@ -8,34 +8,39 @@ import (
 	"time"
 )
 
-/* Neural Netowork ist eine Strultur aus Neuronen
+/*Neural Netowork ist eine Strultur aus Neuronen
 und Verbindungen zwischen diesen. Außerdem werden
 Informationen wie die Aktivierungsfunktion, deren
 Ableitung und auch, für spezifische Trainings-
 Algorithmen benötigte, Daten verwaltet.*/
 type NeuralNetwork struct {
-	/* Inputs ist ein Slice, welches Pointer
+	/*Inputs ist ein Slice, welches Pointer
 	zu allen Eingabe-Neuronen des Netwerkes
 	speichert um einen einfacheren Zugriff
 	zu gewährleisten.*/
-	Inputs []*Neuron
-	/* Outputs ist ein Slice, welches Pointer
+	Inputs []*Neuron `json:"-"`
+	/*Outputs ist ein Slice, welches Pointer
 	zu allen Ausgabe-Neuronen des Netwerkes
 	speichert um einen einfacherern Zugriff
 	zu gewährleisten.*/
-	Outputs []*Neuron
+	Outputs []*Neuron `json:"-"`
 
-	/* ActivFunc ist die Aktivierungsfunktion,
+	/*ActivFunc ist die Aktivierungsfunktion,
 	welche beim Berechnen mithilfe des Netzes
 	verwendet wird.
 	Sie wird als FloatFunction gespeichert.*/
 	ActivFunc FloatFunction `json:"-"`
-	/* ActivDeriv ist die Ableitung der
+	/*ActivDeriv ist die Ableitung der
 	Aktivierungsfunktion, welche beim Trainieren
 	des Netzes mit der Gradient-Descent-Methode
 	verwendet wird.
 	Sie wird als FloatFunction gespeichert.*/
 	ActivDeriv FloatFunction `json:"-"`
+
+	/*Neurons ist ein Slice zur speicherung aller
+	Neuronen im Netzwerk. Dieses Slice wird zum
+	Speichern und Laden des Netzwerkes verwendet*/
+	Neurons []*Neuron
 
 	NumLayers int
 
@@ -78,14 +83,18 @@ func (nn *NeuralNetwork) CreateLayered(layerSizes []int, useBiases bool) {
 					nn.Inputs = append(nn.Inputs, &n)
 				}
 				for _, p := range parentLayer {
-					p.ConnectTo(&n)
+					if p.Type != BIAS {
+						p.ConnectTo(&n)
+					}
 				}
 			}
 		}
 		if useBiases && l != len(layerSizes)-1 {
 			b := NewNeuron(BIAS)
 			for _, p := range parentLayer {
-				p.ConnectTo(&b)
+				if p.Type != BIAS {
+					p.ConnectTo(&b)
+				}
 			}
 		}
 	}
@@ -118,16 +127,14 @@ func (nn *NeuralNetwork) GetLayer(l int) ([]*Neuron, [][]*Neuron) {
 		addConnections:
 			for _, con := range parent.Conns {
 				for _, layerNeuron := range layer {
-					if layerNeuron.ID == con.ID {
+					if layerNeuron.ID == con.Neuron.ID {
 						continue addConnections
 					}
 				}
 				layer = append(layer, con.Neuron)
 			}
 		}
-	} /*else {
-		return nil, nil
-	}*/
+	}
 
 	return layer, allParents
 }
@@ -139,8 +146,12 @@ func (nn *NeuralNetwork) GetLayers() [][]*Neuron {
 
 ////////////////////////
 
-// Deprecated
 func (nn *NeuralNetwork) SaveTo(path string) {
+	nn.Neurons = nn.Neurons[:0]
+	for _, layer := range nn.GetLayers() {
+		nn.Neurons = append(nn.Neurons, layer...)
+	}
+
 	bytes, err := json.MarshalIndent(nn, "", "\t")
 	check(err)
 
@@ -152,7 +163,6 @@ func (nn *NeuralNetwork) SaveTo(path string) {
 	check(err)
 }
 
-// Deprecated
 func (nn *NeuralNetwork) LoadFrom(path string) {
 	bytes, err := ioutil.ReadFile(path)
 	check(err)
@@ -160,8 +170,26 @@ func (nn *NeuralNetwork) LoadFrom(path string) {
 	err = json.Unmarshal(bytes, &nn)
 	check(err)
 
-	nn.ActivFunc = Sigmoid
-	nn.ActivDeriv = SigmoidDeriv
+	nn.ActivFunc = Sigmoid       //DEFAULT
+	nn.ActivDeriv = SigmoidDeriv //DEFAULT
+
+	for _, neuron := range nn.Neurons {
+		if neuron.Type == OUTPUT {
+			nn.Outputs = append(nn.Outputs, neuron)
+		} else if neuron.Type == INPUT {
+			nn.Inputs = append(nn.Inputs, neuron)
+		}
+		for _, conn := range neuron.Conns {
+		search:
+			for _, other := range nn.Neurons {
+				if other.ID == conn.ConnectedNeuronID {
+					conn.Neuron = other
+					break search
+				}
+			}
+		}
+	}
+	nn.Neurons = nn.Neurons[:0]
 }
 
 func check(err error) {

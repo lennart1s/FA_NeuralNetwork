@@ -36,7 +36,7 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 					neuron.Delta = nn.ActivDeriv(neuron.Input) * neuron.PrevLayerWeightedDelta
 				}
 				for _, con := range neuron.Conns {
-					con.PrevLayerWeightedDelta += neuron.Delta * con.Weight
+					con.Neuron.PrevLayerWeightedDelta += neuron.Delta * con.Weight
 				}
 			}
 		}
@@ -44,7 +44,7 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 		for _, layer := range layers {
 			for _, neuron := range layer {
 				for c := 0; c < len(neuron.Conns); c++ {
-					neuron.Conns[c].Gradient += neuron.Delta * neuron.Conns[c].Output
+					neuron.Conns[c].Gradient += neuron.Delta * neuron.Conns[c].Neuron.Output
 				}
 			}
 		}
@@ -54,11 +54,12 @@ func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 	for _, layer := range layers {
 		for _, neuron := range layer {
 			for c := 0; c < len(neuron.Conns); c++ {
-				con := &neuron.Conns[c]
+				con := neuron.Conns[c]
 				con.WeightChange = td.LearningRate*con.Gradient + td.Momentum*con.WeightChange
 				con.Weight += con.WeightChange
 			}
 		}
 	}
 
+	nn.BackPropRuns += len(td.Inputs)
 }

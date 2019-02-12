@@ -39,11 +39,12 @@ func TOBackpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 		applyWeightChanges(output, td.LearningRate, td.Momentum)
 	}
 
+	nn.BackPropRuns += len(td.Inputs)
 }
 
 func applyWeightChanges(neuron *NN.Neuron, learningRate float64, momentum float64) {
 	for c := 0; c < len(neuron.Conns); c++ {
-		con := &neuron.Conns[c]
+		con := neuron.Conns[c]
 		con.WeightChange = learningRate*con.Gradient + momentum*con.WeightChange
 		con.Weight += con.WeightChange
 		applyWeightChanges(con.Neuron, learningRate, momentum)
@@ -53,8 +54,8 @@ func applyWeightChanges(neuron *NN.Neuron, learningRate float64, momentum float6
 func calculateGradients(neuron *NN.Neuron) {
 	neuron.CalculatedGradients = true
 	for c := 0; c < len(neuron.Conns); c++ {
-		neuron.Conns[c].Gradient += neuron.Delta * neuron.Conns[c].Output
-		if !neuron.Conns[c].CalculatedGradients {
+		neuron.Conns[c].Gradient += neuron.Delta * neuron.Conns[c].Neuron.Output
+		if !neuron.Conns[c].Neuron.CalculatedGradients {
 			calculateGradients(neuron.Conns[c].Neuron)
 		}
 	}
@@ -68,7 +69,7 @@ func calculateDelta(neuron *NN.Neuron, activDeriv *NN.FloatFunction, ideal float
 		neuron.Delta = (*activDeriv)(neuron.Input) * neuron.PrevLayerWeightedDelta
 	}
 	for _, con := range neuron.Conns {
-		con.PrevLayerWeightedDelta += neuron.Delta * con.Weight
+		con.Neuron.PrevLayerWeightedDelta += neuron.Delta * con.Weight
 	}
 }
 

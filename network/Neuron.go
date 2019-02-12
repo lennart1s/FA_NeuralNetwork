@@ -4,13 +4,13 @@ import (
 	UUID "github.com/google/uuid"
 )
 
-/* Neuron stellt ein einzelnes Neuron
+/*Neuron stellt ein einzelnes Neuron
 in einem Netzwerk dar. Die eingehenden
 Verbindungen mit anderen Neuronen wie
 Werte wie die letzte Eingabe und die
 letzte Ausgabe werden verwaltet.*/
 type Neuron struct {
-	/* Id ist die einamlige ID von
+	/*Id ist die einamlige ID von
 	einem Neuron.*/
 	ID UUID.UUID
 
@@ -22,23 +22,23 @@ type Neuron struct {
 	und OUTPUT.*/
 	Type int
 
-	/* Conns ist das Slice in dem die
+	/*Conns ist das Slice in dem die
 	eingehenden Verbindungen von anderen
 	Neuron gespeichert werden.*/
-	Conns []Connection
+	Conns []*Connection
 
-	/* Input speichert die letzte Gesamt-
+	/*Input speichert die letzte Gesamt-
 	eingabe. Diese ergibt sich aus der Summe
 	der Produkte aus Ausgabe und Gewichtung
 	aller eingehenden Werte.*/
 	Input float64
-	/* Output speichert den letzten Ausgabewert.
+	/*Output speichert den letzten Ausgabewert.
 	Dieser brechnet sich aus der verwendeten
 	Aktivierungsfunktion in abhängigkeit von der
 	Gesamteingabe.*/
 	Output float64
 
-	/* Processed kann als Anhaltpunkt bei sämtlichen
+	/*Processed kann als Anhaltpunkt bei sämtlichen
 	Prozessen verwendet werden ob ein bestimmter
 	Schritt bereits abgeschlossen wurde.
 	Dieses Attribut wird weder vom Neuron selbst
@@ -47,12 +47,12 @@ type Neuron struct {
 	//TODO: ist das noch in gebrauch?
 	CalculatedGradients bool
 
-	/* Delta speichert den zuletzt berechneten
+	/*Delta speichert den zuletzt berechneten
 	Deltawert. Dieser wird zum Trainieren eines
 	Netzwerkes mit Methoden, welche auf der
 	Delta-Regel beruhen, verwendet.*/
 	Delta float64
-	/* ÜrevLayerWeightedDelta ist die Summe
+	/*ÜrevLayerWeightedDelta ist die Summe
 	der Produkte aus allen Delta-Werten von
 	Neuronen, die mit diesem Neuron verbunden
 	sind, und der Gewichtung dieser Verbindung.*/
@@ -66,7 +66,7 @@ func NewNeuron(Type int) Neuron {
 }
 
 func (n *Neuron) ConnectTo(o *Neuron) {
-	n.Conns = append(n.Conns, Connection{Neuron: o})
+	n.Conns = append(n.Conns, &Connection{Neuron: o, ConnectedNeuronID: o.ID})
 }
 
 const (
@@ -84,10 +84,10 @@ func (n *Neuron) Process(activFunc FloatFunction) {
 	} else {
 		n.Input = 0
 		for c := 0; c < len(n.Conns); c++ {
-			if !n.Conns[c].Processed {
-				n.Conns[c].Process(activFunc)
+			if !n.Conns[c].Neuron.Processed {
+				n.Conns[c].Neuron.Process(activFunc)
 			}
-			n.Input += n.Conns[c].Weight * n.Conns[c].Output
+			n.Input += n.Conns[c].Weight * n.Conns[c].Neuron.Output
 		}
 		n.Output = activFunc(n.Input)
 	}
@@ -97,6 +97,6 @@ func (n *Neuron) Process(activFunc FloatFunction) {
 func (n *Neuron) SetUnprocessed() {
 	n.Processed = false
 	for _, c := range n.Conns {
-		c.SetUnprocessed()
+		c.Neuron.SetUnprocessed()
 	}
 }
