@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func main1() {
 	nn := NN.NeuralNetwork{}
 	nn.CreateLayered([]int{2, 2, 1}, true)
 	nn.RandomizeWeights(-1, 1)
