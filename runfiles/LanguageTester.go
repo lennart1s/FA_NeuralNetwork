@@ -18,35 +18,35 @@ var maxLetters = 14
 
 var trainingSetSize = 1000
 
-func main() {
+func main9() {
 	loadTextFiles()
 
-	//nn := createNetwork()
-	//nn.SaveTo("./savefiles/pre.nn")
-	nn := NN.NeuralNetwork{}
-	nn.LoadFrom("./realBelow10")
+	nn := createNetwork()
+	nn.SaveTo("./savefiles/pre.nn")
+	//nn := NN.NeuralNetwork{}
+	//nn.LoadFrom("./realBelow10")
 
-	in := stringToNetworkInput("WALKING")
-	fmt.Println(nn.Run(in))
+	//in := stringToNetworkInput("WALKING")
+	//fmt.Println(nn.Run(in))
 
-	/*td := createTrainingData()
+	td := createTrainingData()
 
 	fmt.Println("Starting training...")
 	count := 0
 	for err := NT.MeanSquaredError(&nn, td); err > 0.005; NT.Backpropagation(&nn, td) {
 		err = NT.MeanSquaredError(&nn, td)
 		count++
-		if count%2 == 0 {
+		if count%1 == 0 {
 			fmt.Println(err, "|", nn.BackPropRuns)
 			td = createTrainingData()
 		}
-		if count%8 == 0 {
+		if count%2 == 0 {
 			nn.SaveTo("./savefiles/autosave")
 			fmt.Println("Autosaved network!")
 		}
 	}
 
-	nn.SaveTo("./savefiles/german_english_below0_5.nn")*/
+	nn.SaveTo("./savefiles/german_english_below0_5.nn")
 }
 
 func createNetwork() NN.NeuralNetwork {
