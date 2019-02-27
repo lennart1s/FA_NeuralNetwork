@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -11,10 +12,23 @@ func main() {
 
 	fmt.Println("Gestartet! Warte auf User-Input...")
 
-	for input, _, err := console.ReadLine(); string(input) != "exit" && isOk(err); input, _, err = console.ReadLine() {
-		cmd := string(input)
+	for input, _, err := console.ReadLine(); string(input) != "exit" && err == nil; input, _, err = console.ReadLine() {
+		parts := strings.Split(string(input), " ")
 
-		fmt.Println("Entered:", cmd)
+		if parts[0] == "help" {
+			handleHelp(nil)
+			continue
+		}
+
+		cmd, present := commands[parts[0]]
+		if present {
+			args := parts[1:]
+			cmd.Event(args)
+		} else {
+			fmt.Println("Unbekannter Befehel. Versuche 'help' für eine Liste von Befehlen")
+		}
+
+		//fmt.Println("Entered:", cmd)
 	}
 
 	fmt.Println("Programm wird gestoppt...")
@@ -72,10 +86,27 @@ func stringToNetworkInput(str string) []float64 {
 	return input
 }*/
 
-func isOk(err error) bool {
-	if err != nil {
-		panic(err)
-		return false
+func printArgs(args []string) {
+	for _, s := range args {
+		fmt.Println(s)
 	}
-	return true
 }
+
+func handleHelp(args []string) {
+	fmt.Println("Befehle: ")
+	for k, v := range commands {
+		fmt.Printf("%s\t%s", k, v.Description)
+	}
+}
+
+var commands = map[string]command{
+	"test": command{Description: "Mein Test Befehl", Event: nil},
+}
+
+type command struct {
+	Description string
+
+	Event EventFunction
+}
+
+type EventFunction func(args []string)
