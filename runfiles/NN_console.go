@@ -108,18 +108,51 @@ func handleHelp(args []string) {
 }
 
 func handleCreate(args []string) {
-	fmt.Println("Neues Netzwerk:")
-	fmt.Print("Anzahl der Inputs: ")
-	var inputs int
-	for in, _, err := console.ReadLine(); err == nil; in, _, err = console.ReadLine() {
-		inputs, err = strconv.Atoi(string(in))
-		if err == nil {
-			break
-		} else {
-			fmt.Println("Keine valide Eingabe. Bitte nur ganzzahlige Werte")
+	fmt.Println("Neues Netzwerk wird erstellt:")
+	var inputs, outputs int
+	var hidden []int
+	var wMin, wMax float64
+	var useBias bool
+
+	for _, arg := range args {
+		var err error
+		if strings.HasPrefix(arg, "i") {
+			inputs, err = strconv.Atoi(strings.Replace(arg, "i", "", 1))
+		} else if strings.HasPrefix(arg, "o") {
+			outputs, err = strconv.Atoi(strings.Replace(arg, "o", "", 1))
+		} else if strings.HasPrefix(arg, "h") {
+			for _, s := range strings.Split(strings.Replace(arg, "h", "", 1), ",") {
+				var i int
+				i, err = strconv.Atoi(s)
+				hidden = append(hidden, i)
+			}
+		} else if strings.HasPrefix(arg, "w") {
+			parts := strings.Split(strings.Replace(arg, "w", "", 1), ":")
+			wMin, err = strconv.ParseFloat(parts[0], 64)
+			wMax, err = strconv.ParseFloat(parts[1], 64)
+		} else if strings.HasPrefix(arg, "b") {
+			useBias, err = strconv.ParseBool(strings.Replace(arg, "b", "", 1))
+		}
+
+		if err != nil {
+			fmt.Printf("\tError parsing argument: '%v'\n", arg)
+			return
 		}
 	}
-	fmt.Println(inputs)
+	fmt.Println("\tInput-Neurons:", inputs)
+	fmt.Println("\tHidden-Neurons:", hidden)
+	fmt.Println("\tOutput-Neurons:", outputs)
+	fmt.Printf("\tWeight-Range: %v:%v\n", wMin, wMax)
+	fmt.Println("\tUse-Bias:", useBias)
+
+	layers := []int{inputs}
+	layers = append(layers, hidden...)
+	layers = append(layers, outputs)
+	fmt.Println("Creating network...")
+	nn.CreateLayered(layers, useBias)
+	fmt.Println("Generating weights...")
+	nn.RandomizeWeights(wMin, wMax)
+	fmt.Println("Netzwerk wurde erfolgreich erstellt!")
 }
 
 var commands = map[string]command{
