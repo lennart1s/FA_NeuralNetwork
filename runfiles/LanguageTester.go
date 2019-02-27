@@ -16,20 +16,33 @@ var englishWords []string
 var minLetters = 4
 var maxLetters = 14
 
-var trainingSetSize = 1000
+var trainingSetSize = 6000
 
-func main9() {
+func main13() {
 	loadTextFiles()
 
-	nn := createNetwork()
-	nn.SaveTo("./savefiles/pre.nn")
-	//nn := NN.NeuralNetwork{}
-	//nn.LoadFrom("./realBelow10")
+	//nn := createNetwork()
+	//nn.SaveTo("./savefiles/pre.nn")
+	nn := NN.NeuralNetwork{}
+	nn.LoadFrom("./realBelow10")
+
+	correct := 0
+
+	td := createTrainingData()
+	for i := 0; i < len(td.Inputs); i++ {
+		out := nn.Run(td.Inputs[i])
+		if td.Ideals[i][0] == 1 && out[0] > out[1] {
+			correct++
+		} else if td.Ideals[i][1] == 1 && out[1] > out[0] {
+			correct++
+		}
+	}
+	fmt.Println(correct, "/", len(td.Inputs))
 
 	//in := stringToNetworkInput("WALKING")
 	//fmt.Println(nn.Run(in))
 
-	td := createTrainingData()
+	/*td := createTrainingData()
 
 	fmt.Println("Starting training...")
 	count := 0
@@ -46,7 +59,7 @@ func main9() {
 		}
 	}
 
-	nn.SaveTo("./savefiles/german_english_below0_5.nn")
+	nn.SaveTo("./savefiles/german_english_below0_5.nn")*/
 }
 
 func createNetwork() NN.NeuralNetwork {
