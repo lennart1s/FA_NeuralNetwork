@@ -11,11 +11,7 @@ func main() {
 
 	fmt.Println("Gestartet! Warte auf User-Input...")
 
-	for input, isPrefix, err := console.ReadLine(); string(input) != "exit" && isOk(err); input, isPrefix, err = console.ReadLine() {
-		for addition := []byte{}; isPrefix && isOk(err); addition, isPrefix, err = console.ReadLine() {
-			fmt.Println("add")
-			input = append(input, addition...)
-		}
+	for input, _, err := console.ReadLine(); string(input) != "exit" && isOk(err); input, _, err = console.ReadLine() {
 		cmd := string(input)
 
 		fmt.Println("Entered:", cmd)
