@@ -1,14 +1,22 @@
 package main
 
 import (
+	NN "FA_NeuralNetwork/network"
+	NT "FA_NeuralNetwork/training"
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
+var console *bufio.Reader
+
+var nn NN.NeuralNetwork
+var td NT.TrainingData
+
 func main() {
-	console := bufio.NewReader(os.Stdin)
+	console = bufio.NewReader(os.Stdin)
 
 	fmt.Println("Gestartet! Warte auf User-Input...")
 
@@ -99,8 +107,24 @@ func handleHelp(args []string) {
 	}
 }
 
+func handleCreate(args []string) {
+	fmt.Println("Neues Netzwerk:")
+	fmt.Print("Anzahl der Inputs: ")
+	var inputs int
+	for in, _, err := console.ReadLine(); err == nil; in, _, err = console.ReadLine() {
+		inputs, err = strconv.Atoi(string(in))
+		if err == nil {
+			break
+		} else {
+			fmt.Println("Keine valide Eingabe. Bitte nur ganzzahlige Werte")
+		}
+	}
+	fmt.Println(inputs)
+}
+
 var commands = map[string]command{
-	"test": command{Description: "Mein Test Befehl", Event: nil},
+	"test":   command{Description: "Mein Test Befehl", Event: printArgs},
+	"create": command{Description: "", Event: handleCreate},
 }
 
 type command struct {
