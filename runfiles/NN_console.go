@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -16,6 +17,7 @@ var nn NN.NeuralNetwork
 var td NT.TrainingData
 
 func main() {
+	commands["help"] = command{Description: "Listet alle eingetragenen Befehle. 'help [cmd]' gibt mehr Infos", Event: handleHelp}
 	console = bufio.NewReader(os.Stdin)
 
 	fmt.Println("Gestartet! Warte auf User-Input...")
@@ -23,87 +25,38 @@ func main() {
 	for input, _, err := console.ReadLine(); string(input) != "exit" && err == nil; input, _, err = console.ReadLine() {
 		parts := strings.Split(string(input), " ")
 
-		if parts[0] == "help" {
-			handleHelp(nil)
-			continue
-		}
-
 		cmd, present := commands[parts[0]]
 		if present {
 			args := parts[1:]
 			cmd.Event(args)
+			fmt.Println("")
 		} else {
 			fmt.Println("Unbekannter Befehel. Versuche 'help' für eine Liste von Befehlen")
 		}
-
-		//fmt.Println("Entered:", cmd)
 	}
 
 	fmt.Println("Programm wird gestoppt...")
-
-	//nn := createNetwork()
-	//nn.SaveTo("./savefiles/pre.nn")
-	//nn := NN.NeuralNetwork{}
-	//nn.LoadFrom("./realBelow10")
-
-	/*correct := 0
-
-	td := createTrainingData()
-	for i := 0; i < len(td.Inputs); i++ {
-		out := nn.Run(td.Inputs[i])
-		if td.Ideals[i][0] == 1 && out[0] > out[1] {
-			correct++
-		} else if td.Ideals[i][1] == 1 && out[1] > out[0] {
-			correct++
-		}
-	}
-	fmt.Println(correct, "/", len(td.Inputs))*/
-}
-
-/*func validate(str string) (string, bool) {
-	str = strings.ToUpper(str)
-	str = strings.Replace(str, "Ä", "AE", -1)
-	str = strings.Replace(str, "Ö", "OE", -1)
-	str = strings.Replace(str, "Ü", "UE", -1)
-	str = strings.Replace(str, "ß", "SS", -1)
-	val := len(str) >= minLetters && len(str) <= maxLetters
-	for _, r := range []rune(str) {
-		if int(r) < 65 || int(r) > 90 {
-			val = false
-		}
-	}
-	return str, val
-}
-
-func stringToNetworkInput(str string) []float64 {
-	var input []float64
-
-	runes := []rune(str)
-	for _, r := range runes {
-		val := int(r)
-		if val < 65 || val > 90 {
-			println(string(r))
-			panic("Invalid rune")
-		}
-		input = append(input, make([]float64, val-65)...)
-		input = append(input, 1)
-		input = append(input, make([]float64, 26-(val-65)-1)...)
-	}
-	input = append(input, make([]float64, 26*maxLetters-len(input))...)
-
-	return input
-}*/
-
-func printArgs(args []string) {
-	for _, s := range args {
-		fmt.Println(s)
-	}
 }
 
 func handleHelp(args []string) {
-	fmt.Println("Befehle: ")
-	for k, v := range commands {
-		fmt.Printf("%s\t%s", k, v.Description)
+	if len(args) != 0 {
+		for _, arg := range args {
+			cmd, present := commands[arg]
+			if present {
+				fmt.Println("Info:", arg)
+				fmt.Println("", cmd.Description)
+				for _, a := range cmd.Additional {
+					fmt.Printf("\t%v\n", a)
+				}
+			} else {
+				fmt.Printf("Couldn't find command '%v'.", arg)
+			}
+		}
+	} else {
+		fmt.Println("Befehle: ")
+		for k, v := range commands {
+			fmt.Printf(" %s\t%s\n", k, v.Description)
+		}
 	}
 }
 
@@ -155,15 +108,79 @@ func handleCreate(args []string) {
 	fmt.Println("Netzwerk wurde erfolgreich erstellt!")
 }
 
+func handleSave(args []string) {
+	if reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
+		fmt.Println(" No current Network. Please load or create a Network")
+		return
+	}
+	fmt.Println(" Saving network...")
+	if len(args) < 1 {
+		fmt.Println("Using default path: './default'")
+		nn.SaveTo("./default")
+	} else {
+		fmt.Printf(" Writing to '%v'...\n", args[0])
+		nn.SaveTo(args[0])
+	}
+	fmt.Println(" Saved the current Network!")
+}
+
+func handleLoad(args []string) {
+	if !reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
+		nn.SaveTo("./autosave")
+		fmt.Println(" Autosaved previous network")
+	}
+	fmt.Println(" Loading Network...")
+	if len(args) < 1 {
+		fmt.Println(" Using default path: './default'")
+		nn.LoadFrom("./default")
+	} else {
+		fmt.Printf(" Loading from '%v'...\n", args[0])
+		nn.LoadFrom(args[0])
+	}
+	fmt.Println(" Loaded network!")
+}
+
+func handleRun(args []string) {
+	if reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
+		fmt.Println(" No current Network. Please load or create a Network")
+		return
+	}
+	if len(args) != len(nn.Inputs) {
+		fmt.Printf(" Number of inputs(%v) does not match number of Input-Neurons(%v)!\n", len(args), len(nn.Inputs))
+		return
+	}
+	var inputs []float64
+	for _, arg := range args {
+		val, err := strconv.ParseFloat(arg, 64)
+		if err != nil {
+			fmt.Printf(" Error while parsing input: '%v'\n", arg)
+			return
+		}
+		inputs = append(inputs, val)
+	}
+	out := nn.Run(inputs)
+	fmt.Println(" Output:", out)
+}
+
 var commands = map[string]command{
-	"test":   command{Description: "Mein Test Befehl", Event: printArgs},
-	"create": command{Description: "", Event: handleCreate},
+	"create": command{Description: "Erstellt ein neues NeuronalesNetz.", Event: handleCreate,
+		Additional: []string{"i*\tErstellt *(int) Input-Neuronen", "o*\tErstellt *(int) Output-Neuronen",
+			"h*,*...\tErstellt Hidden-Layer mit *(int) Neuronen", "w*:*\tGeneriert zufällige Gewichtungen zwischen *(float) und *(float)",
+			"b*\tBenutze Bias-Neuronen: *(bool)"}},
+	"exit": command{Description: "Beendet das Programm."},
+	"save": command{Description: "Speichert das aktuelle Netzwerk in einer Datei(json-Format).", Event: handleSave,
+		Additional: []string{"*\tSpeichert die Datei im Pfad *(string)"}},
+	"load": command{Description: "Lädt ein Netzwerk aus einer Datei(json-Format). Dies überschriebt das momentane Netzwerk", Event: handleLoad,
+		Additional: []string{"*\tLädt die Datei im Pfad *(string)"}},
+	"run": command{Description: "Berechnet die Ausgabe des momentanen Netzwerkes mit gegebenen Input.", Event: handleRun,
+		Additional: []string{"* * *...\tBerechnet die Ausgabe mit den Inputs *(float) und gibt sie aus."}},
 }
 
 type command struct {
 	Description string
+	Additional  []string
 
-	Event EventFunction
+	Event eventFunction
 }
 
-type EventFunction func(args []string)
+type eventFunction func(args []string)
