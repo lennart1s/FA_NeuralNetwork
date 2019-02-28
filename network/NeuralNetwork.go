@@ -2,6 +2,7 @@ package network
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -163,12 +164,16 @@ func (nn *NeuralNetwork) SaveTo(path string) {
 	check(err)
 }
 
-func (nn *NeuralNetwork) LoadFrom(path string) {
+func (nn *NeuralNetwork) LoadFrom(path string) error {
 	bytes, err := ioutil.ReadFile(path)
-	check(err)
+	//check(err)
 
 	err = json.Unmarshal(bytes, &nn)
-	check(err)
+	//check(err)
+
+	if err != nil {
+		return errors.New("Error while reading file '" + path + "'!")
+	}
 
 	nn.ActivFunc = Sigmoid       //DEFAULT
 	nn.ActivDeriv = SigmoidDeriv //DEFAULT
@@ -190,6 +195,8 @@ func (nn *NeuralNetwork) LoadFrom(path string) {
 		}
 	}
 	nn.Neurons = nn.Neurons[:0]
+
+	return nil
 }
 
 func check(err error) {

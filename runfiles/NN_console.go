@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var console *bufio.Reader
@@ -23,7 +24,7 @@ func main() {
 	fmt.Println("Gestartet! Warte auf User-Input...")
 
 	for input, _, err := console.ReadLine(); string(input) != "exit" && err == nil; input, _, err = console.ReadLine() {
-		parts := strings.Split(string(input), " ")
+		parts := strings.Split(strings.TrimLeft(strings.TrimRight(string(input), " "), " "), " ")
 
 		cmd, present := commands[parts[0]]
 		if present {
@@ -31,7 +32,7 @@ func main() {
 			cmd.Event(args)
 			fmt.Println("")
 		} else {
-			fmt.Println("Unbekannter Befehel. Versuche 'help' für eine Liste von Befehlen")
+			fmt.Printf("Unbekannter Befehl '%v'. Versuche 'help' für eine Liste von Befehlen\n", string(input))
 		}
 	}
 
@@ -61,6 +62,10 @@ func handleHelp(args []string) {
 }
 
 func handleCreate(args []string) {
+	if !reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
+		nn.SaveTo("./autosave")
+		fmt.Println(" Autosaved previous network")
+	}
 	fmt.Println("Neues Netzwerk wird erstellt:")
 	var inputs, outputs int
 	var hidden []int
@@ -125,17 +130,21 @@ func handleSave(args []string) {
 }
 
 func handleLoad(args []string) {
-	if !reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
-		nn.SaveTo("./autosave")
-		fmt.Println(" Autosaved previous network")
-	}
 	fmt.Println(" Loading Network...")
 	if len(args) < 1 {
 		fmt.Println(" Using default path: './default'")
-		nn.LoadFrom("./default")
+		err := nn.LoadFrom("./default")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	} else {
 		fmt.Printf(" Loading from '%v'...\n", args[0])
-		nn.LoadFrom(args[0])
+		err := nn.LoadFrom(args[0])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 	fmt.Println(" Loaded network!")
 }
@@ -162,6 +171,104 @@ func handleRun(args []string) {
 	fmt.Println(" Output:", out)
 }
 
+func handleTrain(args []string) {
+	var tdPath string
+	iterations := -1
+	errorAim := float64(-1.0)
+	seconds := -1
+	autosave := -1
+
+	for _, arg := range args {
+		var err error
+		if strings.HasPrefix(arg, "td") {
+			tdPath = strings.Replace(arg, "td", "", 1)
+		} else if strings.HasPrefix(arg, "i") {
+			iterations, err = strconv.Atoi(strings.Replace(arg, "i", "", 1))
+		} else if strings.HasPrefix(arg, "e") {
+			errorAim, err = strconv.ParseFloat(strings.Replace(arg, "e", "", 1), 64)
+		} else if strings.HasPrefix(arg, "s") {
+			seconds, err = strconv.Atoi(strings.Replace(arg, "s", "", 1))
+		} else if strings.HasPrefix(arg, "as") {
+			autosave, err = strconv.Atoi(strings.Replace(arg, "as", "", 1))
+		}
+
+		if err != nil {
+			fmt.Printf("\tError parsing argument: '%v'\n", arg)
+			return
+		}
+	}
+
+	err := td.LoadFrom(tdPath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("\tTrainingData:", tdPath)
+	if iterations != -1 {
+		fmt.Println("\tIteration-Cap:", iterations)
+	}
+	if errorAim != -1 {
+		fmt.Println("\tError-Aim:", errorAim)
+	}
+	if seconds != -1 {
+		fmt.Printf("\tSeconds-Cap: %vs\n", seconds)
+	}
+	if autosave != -1 {
+		fmt.Printf("\tAutosave: %vs\n", autosave)
+	}
+
+	startTime := time.Now()
+	startIterations := nn.BackPropRuns
+	lastAutoSave := time.Now()
+
+	duration := 0
+	lastPrint := 0
+
+	training := make(chan struct{})
+
+	go func() {
+		for in, _, _ := console.ReadLine(); string(in) != "stop"; in, _, _ = console.ReadLine() {
+			select {
+			case <-training:
+				return
+			default:
+			}
+		}
+		close(training)
+	}()
+
+loop:
+	for err := NT.MeanSquaredError(&nn, td); true; err = NT.MeanSquaredError(&nn, td) {
+		duration = int(time.Now().Sub(startTime) / time.Second)
+		if duration >= lastPrint+2 {
+			fmt.Printf("\r  Duration: %vs    MSE: %v    Iterations: %v  ", duration, err, nn.BackPropRuns-startIterations)
+			lastPrint = duration
+		}
+		if errorAim != -1 && err <= errorAim {
+			fmt.Println("\n Reached error-aim.")
+			close(training)
+		} else if iterations != -1 && nn.BackPropRuns-startIterations >= iterations {
+			fmt.Println("\n Reached iteration-cap.")
+			close(training)
+		} else if seconds != -1 && duration >= seconds {
+			fmt.Println("\n Reached time-limit.")
+			close(training)
+		} else if seconds != -1 && int(time.Now().Sub(lastAutoSave)/time.Second) >= autosave {
+			nn.SaveTo("./autosave")
+			lastAutoSave = time.Now()
+		}
+
+		NT.TOBackpropagation(&nn, td)
+
+		select {
+		case <-training:
+			break loop
+		default:
+		}
+	}
+	fmt.Println(" Training stopped.")
+}
+
 var commands = map[string]command{
 	"create": command{Description: "Erstellt ein neues NeuronalesNetz.", Event: handleCreate,
 		Additional: []string{"i*\tErstellt *(int) Input-Neuronen", "o*\tErstellt *(int) Output-Neuronen",
@@ -174,6 +281,8 @@ var commands = map[string]command{
 		Additional: []string{"*\tLädt die Datei im Pfad *(string)"}},
 	"run": command{Description: "Berechnet die Ausgabe des momentanen Netzwerkes mit gegebenen Input.", Event: handleRun,
 		Additional: []string{"* * *...\tBerechnet die Ausgabe mit den Inputs *(float) und gibt sie aus."}},
+	"train": command{Description: "Trainiert das momentane Netzwerk mit einem gegebenen Trainingsset.", Event: handleTrain,
+		Additional: []string{}},
 }
 
 type command struct {

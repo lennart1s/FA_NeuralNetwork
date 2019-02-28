@@ -2,6 +2,7 @@ package training
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 )
@@ -26,12 +27,15 @@ func (td *TrainingData) SaveTo(path string) {
 	check(err)
 }
 
-func (td *TrainingData) LoadFrom(path string) {
+func (td *TrainingData) LoadFrom(path string) error {
 	bytes, err := ioutil.ReadFile(path)
-	check(err)
 
 	err = json.Unmarshal(bytes, &td)
-	check(err)
+
+	if err != nil {
+		return errors.New("Error while reading file '" + path + "'!")
+	}
+	return nil
 }
 
 func check(err error) {
