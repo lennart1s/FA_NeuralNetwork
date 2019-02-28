@@ -2,6 +2,7 @@ package main
 
 import (
 	NN "FA_NeuralNetwork/network"
+	MC "FA_NeuralNetwork/tools"
 	NT "FA_NeuralNetwork/training"
 	"bufio"
 	"fmt"
@@ -227,14 +228,22 @@ func handleTrain(args []string) {
 	training := make(chan struct{})
 
 	go func() {
-		for in, _, _ := console.ReadLine(); string(in) != "stop"; in, _, _ = console.ReadLine() {
+		MC.StartListener()
+		defer MC.StopListener()
+		for {
+			for val, ok := MC.GetNext(); ok; val, ok = MC.GetNext() {
+				if val == "stop" {
+					close(training)
+					return
+				}
+			}
 			select {
 			case <-training:
 				return
 			default:
 			}
+			time.Sleep(200 * time.Millisecond)
 		}
-		close(training)
 	}()
 
 loop:
