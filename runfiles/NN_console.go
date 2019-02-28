@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+var running bool
+
 var console *bufio.Reader
 
 var nn NN.NeuralNetwork
@@ -21,11 +23,13 @@ var td NT.TrainingData
 func main() {
 	commands["help"] = command{Description: "Listet alle eingetragenen Befehle. 'help [cmd]' gibt mehr Infos", Event: handleHelp}
 	console = bufio.NewReader(os.Stdin)
-
+	running = true
 	fmt.Println("Gestartet! Warte auf User-Input...")
 
-	for input, _, err := console.ReadLine(); string(input) != "exit" && err == nil; input, _, err = console.ReadLine() {
-		parts := strings.Split(strings.TrimLeft(strings.TrimRight(string(input), " "), " "), " ")
+	MC.StartListener()
+	for running {
+		input := MC.GetNext()
+		parts := strings.Split(strings.TrimLeft(input, " "), " ")
 
 		cmd, present := commands[parts[0]]
 		if present {
@@ -228,10 +232,8 @@ func handleTrain(args []string) {
 	training := make(chan struct{})
 
 	go func() {
-		MC.StartListener()
-		defer MC.StopListener()
 		for {
-			for val, ok := MC.GetNext(); ok; val, ok = MC.GetNext() {
+			for val, ok := MC.HasNext(); ok; val, ok = MC.HasNext() {
 				if val == "stop" {
 					close(training)
 					return
@@ -283,7 +285,7 @@ var commands = map[string]command{
 		Additional: []string{"i*\tErstellt *(int) Input-Neuronen", "o*\tErstellt *(int) Output-Neuronen",
 			"h*,*...\tErstellt Hidden-Layer mit *(int) Neuronen", "w*:*\tGeneriert zufällige Gewichtungen zwischen *(float) und *(float)",
 			"b*\tBenutze Bias-Neuronen: *(bool)"}},
-	"exit": command{Description: "Beendet das Programm."},
+	"exit": command{Description: "Beendet das Programm.", Event: func(args []string) { running = false }},
 	"save": command{Description: "Speichert das aktuelle Netzwerk in einer Datei(json-Format).", Event: handleSave,
 		Additional: []string{"*\tSpeichert die Datei im Pfad *(string)"}},
 	"load": command{Description: "Lädt ein Netzwerk aus einer Datei(json-Format). Dies überschriebt das momentane Netzwerk", Event: handleLoad,

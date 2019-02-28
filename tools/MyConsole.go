@@ -26,7 +26,11 @@ func StartListener() {
 	}()
 }
 
-func GetNext() (string, bool) {
+func GetNext() string {
+	return <-inputs
+}
+
+func HasNext() (string, bool) {
 	select {
 	case val, ok := <-inputs:
 		if ok {
