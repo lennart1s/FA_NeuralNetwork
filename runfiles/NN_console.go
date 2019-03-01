@@ -4,9 +4,7 @@ import (
 	NN "FA_NeuralNetwork/network"
 	MC "FA_NeuralNetwork/tools"
 	NT "FA_NeuralNetwork/training"
-	"bufio"
 	"fmt"
-	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -15,17 +13,16 @@ import (
 
 var running bool
 
-var console *bufio.Reader
-
 var nn NN.NeuralNetwork
 var td NT.TrainingData
 
 func main() {
+	// Initialisierung
 	commands["help"] = command{Description: "Listet alle eingetragenen Befehle. 'help [cmd]' gibt mehr Infos", Event: handleHelp}
-	console = bufio.NewReader(os.Stdin)
 	running = true
 	fmt.Println("Gestartet! Warte auf User-Input...")
 
+	// User-Input-Loop
 	MC.StartListener()
 	for running {
 		input := MC.GetNext()
@@ -46,6 +43,7 @@ func main() {
 
 func handleHelp(args []string) {
 	if len(args) != 0 {
+		// Gib Beschreibung des Befehls und Argument-Informationen
 		for _, arg := range args {
 			cmd, present := commands[arg]
 			if present {
@@ -59,6 +57,7 @@ func handleHelp(args []string) {
 			}
 		}
 	} else {
+		// Gib eine Liste aller Befehle + Beschreibung
 		fmt.Println("Befehle: ")
 		for k, v := range commands {
 			fmt.Printf(" %s\t%s\n", k, v.Description)
@@ -67,6 +66,7 @@ func handleHelp(args []string) {
 }
 
 func handleCreate(args []string) {
+	// Momentanes Netzwerk speichern
 	if !reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
 		nn.SaveTo("./autosave")
 		fmt.Println(" Autosaved previous network")
@@ -77,6 +77,7 @@ func handleCreate(args []string) {
 	var wMin, wMax float64
 	var useBias bool
 
+	// Befehlsargumente lesen
 	for _, arg := range args {
 		var err error
 		if strings.HasPrefix(arg, "i") {
@@ -108,6 +109,7 @@ func handleCreate(args []string) {
 	fmt.Printf("\tWeight-Range: %v:%v\n", wMin, wMax)
 	fmt.Println("\tUse-Bias:", useBias)
 
+	// Netwerk erstellen
 	layers := []int{inputs}
 	layers = append(layers, hidden...)
 	layers = append(layers, outputs)
@@ -163,6 +165,7 @@ func handleRun(args []string) {
 		fmt.Printf(" Number of inputs(%v) does not match number of Input-Neurons(%v)!\n", len(args), len(nn.Inputs))
 		return
 	}
+	// Eingabe-Werte lesen
 	var inputs []float64
 	for _, arg := range args {
 		val, err := strconv.ParseFloat(arg, 64)
@@ -172,6 +175,7 @@ func handleRun(args []string) {
 		}
 		inputs = append(inputs, val)
 	}
+
 	out := nn.Run(inputs)
 	fmt.Println(" Output:", out)
 }
@@ -183,6 +187,7 @@ func handleTrain(args []string) {
 	seconds := -1
 	autosave := -1
 
+	// Argumente lesen
 	for _, arg := range args {
 		var err error
 		if strings.HasPrefix(arg, "td") {
@@ -191,8 +196,8 @@ func handleTrain(args []string) {
 			iterations, err = strconv.Atoi(strings.Replace(arg, "i", "", 1))
 		} else if strings.HasPrefix(arg, "e") {
 			errorAim, err = strconv.ParseFloat(strings.Replace(arg, "e", "", 1), 64)
-		} else if strings.HasPrefix(arg, "s") {
-			seconds, err = strconv.Atoi(strings.Replace(arg, "s", "", 1))
+		} else if strings.HasPrefix(arg, "t") {
+			seconds, err = strconv.Atoi(strings.Replace(arg, "t", "", 1))
 		} else if strings.HasPrefix(arg, "as") {
 			autosave, err = strconv.Atoi(strings.Replace(arg, "as", "", 1))
 		}
@@ -222,6 +227,7 @@ func handleTrain(args []string) {
 		fmt.Printf("\tAutosave: %vs\n", autosave)
 	}
 
+	// Trainings-Vorbereitung
 	startTime := time.Now()
 	startIterations := nn.BackPropRuns
 	lastAutoSave := time.Now()
@@ -231,6 +237,7 @@ func handleTrain(args []string) {
 
 	training := make(chan struct{})
 
+	// Stop-Funktion
 	go func() {
 		for {
 			for val, ok := MC.HasNext(); ok; val, ok = MC.HasNext() {
@@ -248,13 +255,14 @@ func handleTrain(args []string) {
 		}
 	}()
 
-loop:
+trainingsLoop:
 	for err := NT.MeanSquaredError(&nn, td); true; err = NT.MeanSquaredError(&nn, td) {
 		duration = int(time.Now().Sub(startTime) / time.Second)
 		if duration >= lastPrint+2 {
 			fmt.Printf("\r  Duration: %vs    MSE: %v    Iterations: %v  ", duration, err, nn.BackPropRuns-startIterations)
 			lastPrint = duration
 		}
+		// Überprüfe End-Kriterien
 		if errorAim != -1 && err <= errorAim {
 			fmt.Println("\n Reached error-aim.")
 			close(training)
@@ -271,9 +279,10 @@ loop:
 
 		NT.TOBackpropagation(&nn, td)
 
+		// Überprüfe 'Stop'-Funktion
 		select {
 		case <-training:
-			break loop
+			break trainingsLoop
 		default:
 		}
 	}
@@ -293,7 +302,9 @@ var commands = map[string]command{
 	"run": command{Description: "Berechnet die Ausgabe des momentanen Netzwerkes mit gegebenen Input.", Event: handleRun,
 		Additional: []string{"* * *...\tBerechnet die Ausgabe mit den Inputs *(float) und gibt sie aus."}},
 	"train": command{Description: "Trainiert das momentane Netzwerk mit einem gegebenen Trainingsset.", Event: handleTrain,
-		Additional: []string{}},
+		Additional: []string{"td*\tLädt die Trainings-Daten aus dem Pfad *(string)", "i*\tBeendet das Training nach *(int) Iterationen.",
+			"e*\tBeendet das Training sobald ein MSE von *(float) erreicht wird.", "t*\tBeendet das Training nach *(int) Sekunden.",
+			"as*\tSpeichert das Netzwerk alle *(int) Sekunden."}},
 }
 
 type command struct {
