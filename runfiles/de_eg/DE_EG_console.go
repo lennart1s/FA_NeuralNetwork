@@ -49,6 +49,12 @@ func runWith(input string) {
 	fmt.Printf(" Input: '%v'\n", str)
 	fmt.Printf("  -> De: %v\n", out[0])
 	fmt.Printf("  -> Eg: %v\n", out[1])
+	if out[0] > out[1] {
+		fmt.Println(" Output: Deutsch")
+	} else {
+		fmt.Println(" Output: Englisch")
+	}
+	fmt.Println("")
 }
 
 func validate(str string) (string, bool) {
