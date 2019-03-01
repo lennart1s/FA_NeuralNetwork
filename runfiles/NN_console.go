@@ -68,7 +68,7 @@ func handleHelp(args []string) {
 func handleCreate(args []string) {
 	// Momentanes Netzwerk speichern
 	if !reflect.DeepEqual(nn, NN.NeuralNetwork{}) {
-		nn.SaveTo("./autosave")
+		nn.SaveTo("./savefiles/autosave" + time.Now().Format("02.01_15.04.05"))
 		fmt.Println(" Autosaved previous network")
 	}
 	fmt.Println("Neues Netzwerk wird erstellt:")
@@ -128,7 +128,7 @@ func handleSave(args []string) {
 	fmt.Println(" Saving network...")
 	if len(args) < 1 {
 		fmt.Println("Using default path: './default'")
-		nn.SaveTo("./default")
+		nn.SaveTo("./savefiles/" + time.Now().Format("02.01_15.04.05"))
 	} else {
 		fmt.Printf(" Writing to '%v'...\n", args[0])
 		nn.SaveTo(args[0])
@@ -273,7 +273,7 @@ trainingsLoop:
 			fmt.Println("\n Reached time-limit.")
 			close(training)
 		} else if seconds != -1 && int(time.Now().Sub(lastAutoSave)/time.Second) >= autosave {
-			nn.SaveTo("./autosave")
+			nn.SaveTo("./savefiles/trainingSave" + startTime.Format("02.01_15.04.05"))
 			lastAutoSave = time.Now()
 		}
 
