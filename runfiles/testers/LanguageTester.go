@@ -70,9 +70,9 @@ func createNetwork() NN.NeuralNetwork {
 	return nn
 }
 
-func createTrainingData() NT.TrainingData {
+func createTrainingData() NT.DataSet {
 	rand.Seed(int64(time.Now().Nanosecond() * time.Now().Minute()))
-	td := NT.TrainingData{}
+	td := NT.DataSet{}
 	td.LearningRate = 0.18
 	td.Momentum = 0.07
 	for i := 0; i < trainingSetSize/2; i++ {

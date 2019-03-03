@@ -14,7 +14,7 @@ import (
 var running bool
 
 var nn NN.NeuralNetwork
-var td NT.TrainingData
+var td NT.DataSet
 
 func main() {
 	// Initialisierung

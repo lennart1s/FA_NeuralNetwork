@@ -68,16 +68,21 @@ type Neuron struct {
 	PrevLayerWeightedDelta float64
 }
 
+/*NewNeuron erstell ein neues Neuron vom
+gegebenen Typ mit einer einzigartigen ID.*/
 func NewNeuron(Type int) Neuron {
 	id, _ := UUID.NewUUID()
 	n := Neuron{Type: Type, ID: id}
 	return n
 }
 
+/*ConnectTo verbindet das Neuron
+mit einem gegebenen anderen Neuron.*/
 func (n *Neuron) ConnectTo(o *Neuron) {
 	n.Conns = append(n.Conns, &Connection{Neuron: o, ConnectedNeuronID: o.ID})
 }
 
+/*Die verschiedenen Neuron-Typen*/
 const (
 	INPUT  = 0
 	HIDDEN = 1
@@ -85,6 +90,8 @@ const (
 	OUTPUT = 3
 )
 
+/*Process berechnet die Ausgabe des
+Neurons mit einer gegebenen Aktivierungsfunktion.*/
 func (n *Neuron) Process(activFunc FloatFunction) {
 	if n.Type == INPUT {
 		n.Output = n.Input
@@ -93,6 +100,7 @@ func (n *Neuron) Process(activFunc FloatFunction) {
 	} else {
 		n.Input = 0
 		for _, conn := range n.Conns {
+			// Wenn nicht schon passiert, berechne alle eingehenden Ausgaben anderer Neuronen
 			if !conn.Neuron.Processed {
 				conn.Neuron.Process(activFunc)
 			}
@@ -104,9 +112,47 @@ func (n *Neuron) Process(activFunc FloatFunction) {
 	n.Processed = true
 }
 
-func (n *Neuron) SetUnprocessed() {
+/*UnsetProcessed setzt für das Neuron und alle
+Neuronen eingehender Verbindungen den
+Processed-Indikator auf false.*/
+func (n *Neuron) UnsetProcessed() {
 	n.Processed = false
 	for _, c := range n.Conns {
-		c.Neuron.SetUnprocessed()
+		c.Neuron.UnsetProcessed()
+	}
+}
+
+/*UnsetCalculatedGradients setzt für das Neuron und
+alle Neuronen eingehender Verbindungen den
+Calculated-Gradients-Indikator auf false.
+Wenn zeroValues == true werden alle Gradient-Werte auf
+0 gesetzt.*/
+func (n *Neuron) UnsetCalculatedGradients(zeroValues bool) {
+	n.CalculatedGradients = false
+	for _, con := range n.Conns {
+		if zeroValues {
+			con.Gradient = 0
+		}
+		con.Neuron.UnsetCalculatedGradients(zeroValues)
+	}
+}
+
+/*UnsetChangedWeights setzt für das Neuron und alle
+Neuronen eingehender Verbindungen den
+ChangedWeights-Indikator auf false.*/
+func (n *Neuron) UnsetChangedWeights() {
+	n.ChangedWeights = false
+	for _, con := range n.Conns {
+		con.Neuron.UnsetChangedWeights()
+	}
+}
+
+/*ZeroPrevLayerWeightedDelta setzt für das Neuron
+und alle Neuronen eingehender Verbindungen den
+PrevLayerWeightedDelta-Wert auf 0.*/
+func (n *Neuron) ZeroPrevLayerWeightedDelta() {
+	n.PrevLayerWeightedDelta = 0
+	for _, con := range n.Conns {
+		con.Neuron.ZeroPrevLayerWeightedDelta()
 	}
 }

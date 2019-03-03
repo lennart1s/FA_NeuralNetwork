@@ -7,9 +7,9 @@ import (
 	"os"
 )
 
-/*TrainingData ist die Datenstruktur zur
+/*DataSet ist die Datenstruktur zur
 verwaltung aller Daten eines Trainingssets.*/
-type TrainingData struct {
+type DataSet struct {
 	Inputs [][]float64
 	Ideals [][]float64
 
@@ -19,7 +19,7 @@ type TrainingData struct {
 
 /*SaveTo speichert die Trainings-Daten in einer
 Text-Datei (JSON-Format).*/
-func (td *TrainingData) SaveTo(path string) {
+func (td *DataSet) SaveTo(path string) {
 	bytes, err := json.MarshalIndent(td, "", "\t")
 	check(err)
 
@@ -33,7 +33,7 @@ func (td *TrainingData) SaveTo(path string) {
 
 /*LoadFrom lädt die TrainingsDaten aus
 einer Textdatei (JSON-Format)*/
-func (td *TrainingData) LoadFrom(path string) error {
+func (td *DataSet) LoadFrom(path string) error {
 	bytes, err := ioutil.ReadFile(path)
 
 	err = json.Unmarshal(bytes, &td)
