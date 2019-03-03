@@ -5,6 +5,8 @@ import (
 	"math"
 )
 
+/*MeanSquaredError gibt den Fehlerwert des
+Netzwerkes mit dem gegebenen TrainingsSet.*/
 func MeanSquaredError(nn *NN.NeuralNetwork, td TrainingData) float64 {
 	var err float64
 

@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+/*TrainingData ist die Datenstruktur zur
+verwaltung aller Daten eines Trainingssets.*/
 type TrainingData struct {
 	Inputs [][]float64
 	Ideals [][]float64
@@ -15,6 +17,8 @@ type TrainingData struct {
 	Momentum     float64
 }
 
+/*SaveTo speichert die Trainings-Daten in einer
+Text-Datei (JSON-Format).*/
 func (td *TrainingData) SaveTo(path string) {
 	bytes, err := json.MarshalIndent(td, "", "\t")
 	check(err)
@@ -27,6 +31,8 @@ func (td *TrainingData) SaveTo(path string) {
 	check(err)
 }
 
+/*LoadFrom lädt die TrainingsDaten aus
+einer Textdatei (JSON-Format)*/
 func (td *TrainingData) LoadFrom(path string) error {
 	bytes, err := ioutil.ReadFile(path)
 

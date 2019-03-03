@@ -16,17 +16,17 @@ var englishWords []string
 var minLetters = 4
 var maxLetters = 14
 
-var trainingSetSize = 6000
+var trainingSetSize = 600
 
-func main13() {
+func main() {
 	loadTextFiles()
 
 	//nn := createNetwork()
 	//nn.SaveTo("./savefiles/pre.nn")
 	nn := NN.NeuralNetwork{}
-	nn.LoadFrom("./realBelow10")
+	nn.LoadFrom("./savefiles/autosave")
 
-	correct := 0
+	/*correct := 0
 
 	td := createTrainingData()
 	for i := 0; i < len(td.Inputs); i++ {
@@ -37,29 +37,29 @@ func main13() {
 			correct++
 		}
 	}
-	fmt.Println(correct, "/", len(td.Inputs))
+	fmt.Println(correct, "/", len(td.Inputs))*/
 
 	//in := stringToNetworkInput("WALKING")
 	//fmt.Println(nn.Run(in))
 
-	/*td := createTrainingData()
+	td := createTrainingData()
 
 	fmt.Println("Starting training...")
 	count := 0
 	for err := NT.MeanSquaredError(&nn, td); err > 0.005; NT.Backpropagation(&nn, td) {
 		err = NT.MeanSquaredError(&nn, td)
 		count++
-		if count%1 == 0 {
+		if count%4 == 0 {
 			fmt.Println(err, "|", nn.BackPropRuns)
 			td = createTrainingData()
 		}
-		if count%2 == 0 {
+		if count%8 == 0 {
 			nn.SaveTo("./savefiles/autosave")
 			fmt.Println("Autosaved network!")
 		}
 	}
 
-	nn.SaveTo("./savefiles/german_english_below0_5.nn")*/
+	nn.SaveTo("./savefiles/german_english_below0_5.nn")
 }
 
 func createNetwork() NN.NeuralNetwork {
@@ -73,8 +73,8 @@ func createNetwork() NN.NeuralNetwork {
 func createTrainingData() NT.TrainingData {
 	rand.Seed(int64(time.Now().Nanosecond() * time.Now().Minute()))
 	td := NT.TrainingData{}
-	td.LearningRate = 0.3
-	td.Momentum = 0.1
+	td.LearningRate = 0.18
+	td.Momentum = 0.07
 	for i := 0; i < trainingSetSize/2; i++ {
 		german, gVal := validate(germanWords[rand.Intn(len(germanWords))])
 		for !gVal {

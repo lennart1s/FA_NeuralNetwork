@@ -277,7 +277,7 @@ trainingsLoop:
 			lastAutoSave = time.Now()
 		}
 
-		NT.TOBackpropagation(&nn, td)
+		NT.Backpropagation(&nn, td)
 
 		// Überprüfe 'Stop'-Funktion
 		select {

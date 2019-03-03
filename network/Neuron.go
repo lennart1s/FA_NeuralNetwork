@@ -44,15 +44,24 @@ type Neuron struct {
 	Dieses Attribut wird weder vom Neuron selbst
 	noch vom Netzwerk verwendet.*/
 	Processed bool
-	//TODO: ist das noch in gebrauch?
+
+	/*CalculatedGradients ist ein Indikator ob
+	in der momentanen Trainings-Iteration schon
+	die Gradienten der Verbindungen berechnet
+	wurden.*/
 	CalculatedGradients bool
+
+	/*ChangedWeights ist ein Indikator ob in der
+	momentanen Trainings-Iteration die Gweichtungen
+	schon angepasst wurden.*/
+	ChangedWeights bool
 
 	/*Delta speichert den zuletzt berechneten
 	Deltawert. Dieser wird zum Trainieren eines
 	Netzwerkes mit Methoden, welche auf der
 	Delta-Regel beruhen, verwendet.*/
 	Delta float64
-	/*ÜrevLayerWeightedDelta ist die Summe
+	/*PrevLayerWeightedDelta ist die Summe
 	der Produkte aus allen Delta-Werten von
 	Neuronen, die mit diesem Neuron verbunden
 	sind, und der Gewichtung dieser Verbindung.*/
@@ -89,7 +98,7 @@ func (n *Neuron) Process(activFunc FloatFunction) {
 			}
 			n.Input += conn.Weight * conn.Neuron.Output
 		}
-		
+
 		n.Output = activFunc(n.Input)
 	}
 	n.Processed = true

@@ -8,6 +8,10 @@ import (
 var console *bufio.Reader
 var inputs = make(chan string, 256)
 
+/*StartListener startet eine
+Nutzer-Eingabe-Abfrage. Alle
+regestrierten Eingaben werden
+in einem String-Channel gespeichert.*/
 func StartListener() {
 	console = bufio.NewReader(os.Stdin)
 	go func() {
@@ -26,10 +30,18 @@ func StartListener() {
 	}()
 }
 
+/*GetNext gibt den nächsten User-Input aus.
+Ist der Channel leer wird auf die nächste
+Eingabe gewartet. Folglich kann diese
+Funktion blockieren.*/
 func GetNext() string {
 	return <-inputs
 }
 
+/*HasNext gibt ein bool zurück,
+ob eine Eingabe vorhanden ist.
+Ist dies der Fall wird auch die
+Eingabe zurück gegeben.*/
 func HasNext() (string, bool) {
 	select {
 	case val, ok := <-inputs:

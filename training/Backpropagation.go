@@ -7,59 +7,96 @@ import (
 func Backpropagation(nn *NN.NeuralNetwork, td TrainingData) {
 	layers := nn.GetLayers()
 
-	for _, layer := range layers {
-		for _, neuron := range layer {
-			for c := 0; c < len(neuron.Conns); c++ {
-				neuron.Conns[c].Gradient = 0
-			}
-		}
+	for _, output := range nn.Outputs {
+		resetGradients(output, false)
+		resetChangedWeights(output)
 	}
 
 	for i := 0; i < len(td.Inputs); i++ {
-		actualOut := nn.Run(td.Inputs[i])
+		nn.Run(td.Inputs[i])
 
-		for _, layer := range layers {
-			for _, neuron := range layer {
-				neuron.PrevLayerWeightedDelta = 0
-			}
+		for _, output := range nn.Outputs {
+			resetGradients(output, true)
+			resetPrevLayerDeltas(output)
 		}
 
-		var outputIndex int
+		outputIndex := -1 //TODO: layerd but tree orientated
 		for l := len(layers) - 1; l > 0; l-- {
 			for _, neuron := range layers[l] {
 				if neuron.Type == NN.OUTPUT {
-					err := actualOut[outputIndex] - td.Ideals[i][outputIndex]
-					neuron.Delta = -err * nn.ActivDeriv(neuron.Input)
 					outputIndex++
 				}
-				if neuron.Type == NN.HIDDEN {
-					neuron.Delta = nn.ActivDeriv(neuron.Input) * neuron.PrevLayerWeightedDelta
-				}
-				for _, con := range neuron.Conns {
-					con.Neuron.PrevLayerWeightedDelta += neuron.Delta * con.Weight
-				}
+				calculateDelta(neuron, &nn.ActivDeriv, td.Ideals[i][outputIndex])
 			}
 		}
 
-		for _, layer := range layers {
-			for _, neuron := range layer {
-				for c := 0; c < len(neuron.Conns); c++ {
-					neuron.Conns[c].Gradient += neuron.Delta * neuron.Conns[c].Neuron.Output
-				}
-			}
+		for _, output := range nn.Outputs {
+			calculateGradients(output)
 		}
 
 	}
 
-	for _, layer := range layers {
-		for _, neuron := range layer {
-			for c := 0; c < len(neuron.Conns); c++ {
-				con := neuron.Conns[c]
-				con.WeightChange = td.LearningRate*con.Gradient + td.Momentum*con.WeightChange
-				con.Weight += con.WeightChange
-			}
-		}
+	for _, output := range nn.Outputs {
+		applyWeightChanges(output, td.LearningRate, td.Momentum)
 	}
 
 	nn.BackPropRuns += len(td.Inputs)
+}
+
+func applyWeightChanges(neuron *NN.Neuron, learningRate float64, momentum float64) {
+	neuron.ChangedWeights = true
+	for _, conn := range neuron.Conns {
+		conn.WeightChange = learningRate*conn.Gradient + momentum*conn.WeightChange
+		conn.Weight += conn.WeightChange
+		if !conn.Neuron.ChangedWeights {
+			applyWeightChanges(conn.Neuron, learningRate, momentum)
+		}
+	}
+}
+
+func calculateGradients(neuron *NN.Neuron) {
+	neuron.CalculatedGradients = true
+	for _, conn := range neuron.Conns {
+		conn.Gradient += neuron.Delta * conn.Neuron.Output
+		if !conn.Neuron.CalculatedGradients {
+			calculateGradients(conn.Neuron)
+		}
+	}
+}
+
+func calculateDelta(neuron *NN.Neuron, activDeriv *NN.FloatFunction, ideal float64) {
+	if neuron.Type == NN.OUTPUT {
+		err := neuron.Output - ideal
+		neuron.Delta = -err * (*activDeriv)(neuron.Input)
+	} else if neuron.Type == NN.HIDDEN {
+		neuron.Delta = (*activDeriv)(neuron.Input) * neuron.PrevLayerWeightedDelta
+	}
+	for _, con := range neuron.Conns {
+		con.Neuron.PrevLayerWeightedDelta += neuron.Delta * con.Weight
+	}
+}
+
+// Reset-Functions
+func resetGradients(neuron *NN.Neuron, onlyFlag bool) {
+	neuron.CalculatedGradients = false
+	for _, con := range neuron.Conns {
+		if !onlyFlag {
+			con.Gradient = 0
+		}
+		resetGradients(con.Neuron, onlyFlag)
+	}
+}
+
+func resetChangedWeights(neuron *NN.Neuron) {
+	neuron.ChangedWeights = false
+	for _, con := range neuron.Conns {
+		resetChangedWeights(con.Neuron)
+	}
+}
+
+func resetPrevLayerDeltas(neuron *NN.Neuron) {
+	neuron.PrevLayerWeightedDelta = 0
+	for _, con := range neuron.Conns {
+		resetPrevLayerDeltas(con.Neuron)
+	}
 }
