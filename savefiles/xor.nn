@@ -1,0 +1,148 @@
+{
+	"Neurons": [
+		{
+			"ID": "fb0ab679-3e57-11e9-9d46-fcaa149797d3",
+			"Type": 0,
+			"Conns": null,
+			"Input": 1,
+			"Output": 1,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0.000004464960036188016
+		},
+		{
+			"ID": "fb0ab679-3e57-11e9-9d47-fcaa149797d3",
+			"Type": 0,
+			"Conns": null,
+			"Input": 1,
+			"Output": 1,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": 0.000004465559540780395
+		},
+		{
+			"ID": "fb0ab679-3e57-11e9-9d48-fcaa149797d3",
+			"Type": 2,
+			"Conns": null,
+			"Input": 0,
+			"Output": 1,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": -0.000006895218412418583
+		},
+		{
+			"ID": "fb0ab679-3e57-11e9-9d43-fcaa149797d3",
+			"Type": 1,
+			"Conns": [
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d46-fcaa149797d3",
+					"Weight": 8.65,
+					"WeightChange": 0,
+					"Gradient": -1.8304032717677133e-7
+				},
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d47-fcaa149797d3",
+					"Weight": -8.41,
+					"WeightChange": 0,
+					"Gradient": -1.8229320326377657e-7
+				},
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d48-fcaa149797d3",
+					"Weight": 4.22,
+					"WeightChange": 0,
+					"Gradient": 9.520277130810475e-8
+				}
+			],
+			"Input": -12.238571922573714,
+			"Output": 0.000004840092321741145,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": 6.709665632023501e-11,
+			"PrevLayerWeightedDelta": 0.000013862744445935143
+		},
+		{
+			"ID": "fb0ab679-3e57-11e9-9d44-fcaa149797d3",
+			"Type": 1,
+			"Conns": [
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d46-fcaa149797d3",
+					"Weight": -8.68,
+					"WeightChange": 0,
+					"Gradient": 2.0145433762887755e-7
+				},
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d47-fcaa149797d3",
+					"Weight": 8.89,
+					"WeightChange": 0,
+					"Gradient": 2.0128170523368824e-7
+				},
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d48-fcaa149797d3",
+					"Weight": 4.37,
+					"WeightChange": 0,
+					"Gradient": -3.025521192235949e-7
+				}
+			],
+			"Input": 2.883815810359655,
+			"Output": 0.9470405713177181,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": 7.0605147360883e-7,
+			"PrevLayerWeightedDelta": 0.00001407746476173248
+		},
+		{
+			"ID": "fb0ab679-3e57-11e9-9d45-fcaa149797d3",
+			"Type": 2,
+			"Conns": null,
+			"Input": 0,
+			"Output": 1,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": 0,
+			"PrevLayerWeightedDelta": -0.000006921299006565486
+		},
+		{
+			"ID": "fb0a6859-3e57-11e9-9d43-fcaa149797d3",
+			"Type": 3,
+			"Conns": [
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d43-fcaa149797d3",
+					"Weight": -14.39,
+					"WeightChange": 0,
+					"Gradient": -8.160956809218552e-7
+				},
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d44-fcaa149797d3",
+					"Weight": -14.37,
+					"WeightChange": 0,
+					"Gradient": -8.057597911175358e-7
+				},
+				{
+					"ConnectedNeuronID": "fb0ab679-3e57-11e9-9d45-fcaa149797d3",
+					"Weight": 21.41,
+					"WeightChange": 0,
+					"Gradient": 4.0519571640665996e-7
+				}
+			],
+			"Input": -6.946444146533291,
+			"Output": 0.0009611253369364426,
+			"Processed": true,
+			"CalculatedGradients": true,
+			"ChangedWeights": true,
+			"Delta": -9.228748631838937e-7,
+			"PrevLayerWeightedDelta": 0
+		}
+	],
+	"NumLayers": 3,
+	"BackPropRuns": 4678720,
+	"Fitness": 0
+}

@@ -73,8 +73,8 @@ func createNetwork() NN.NeuralNetwork {
 func createTrainingData() NT.DataSet {
 	rand.Seed(int64(time.Now().Nanosecond() * time.Now().Minute()))
 	td := NT.DataSet{}
-	td.LearningRate = 0.18
-	td.Momentum = 0.07
+	td.LearningRate = 0.0005
+	td.Momentum = 0.00002
 	for i := 0; i < trainingSetSize/2; i++ {
 		german, gVal := validate(germanWords[rand.Intn(len(germanWords))])
 		for !gVal {
