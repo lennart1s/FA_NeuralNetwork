@@ -40,10 +40,8 @@ func Backpropagation(nn *NN.NeuralNetwork, td DataSet) {
 					calculateDelta(neuron, &nn.ActivDeriv)
 				}
 				// Passe PrevLayerWeightedDelta für Neuronen in höhere Schicht an
-				if neuron.Type == NN.OUTPUT || neuron.Type == NN.HIDDEN {
-					for _, con := range neuron.Conns {
-						con.Neuron.PrevLayerWeightedDelta += neuron.Delta * con.Weight
-					}
+				for _, con := range neuron.Conns {
+					con.Neuron.PrevLayerWeightedDelta += neuron.Delta * con.Weight
 				}
 			}
 		}
